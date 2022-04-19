@@ -65,7 +65,7 @@ def match_scl(fpath, temp_img, tess_path, vinfile, start_minute, end_minute):
 
                 # threshold n1 for the first_time
                 threshold = 0.5
-                for scale in np.linspace(0.4, 1, 20)[::-1]:
+                for scale in np.linspace(0.4, 1, 20)[::-1]:         #image pyramid psaksou gia documentation
 
                     # resize the template according to the scale, and keep track of the ratio of the resizing
                     resized = imutils.resize(gray_tem, width=int(template.shape[1] * scale))
