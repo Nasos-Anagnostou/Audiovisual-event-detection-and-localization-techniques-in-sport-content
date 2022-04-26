@@ -22,7 +22,7 @@ start_time = timeit.default_timer()
 
 
 # 1. initialise file paths with filepaths()
-tess_path, csv_path, vinfile, imfile, trimfile, videoclip_1, fpath = file_paths()
+tess_path, roi_path, csv_path, vinfile, imfile, trimfile, videoclip_1, fpath = file_paths()
 
 
 # 2. get the matching frames with temp img with match_scl()

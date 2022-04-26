@@ -7,7 +7,8 @@ def file_paths():
     root_path = r"E:\Career files\Degree Thesis"
 
     # select the path extracted frames will be saved dimiourgia neou xorou kathe fora?
-    tess_path = root_path + r"/Dataset/image processing/cropped_frames_2/"
+    ocr_path = root_path + r"/Dataset/Images Dataset/cropped_frames_2/"
+    roi_path = root_path + r"/Dataset/Object_Det_files/"
     csv_path = root_path + r"/Dataset/play by play text/cska_barc.csv"
 
     # input template and full game video file
@@ -21,4 +22,4 @@ def file_paths():
     # chosen event video clip
     clip_1 = root_path + r"/Dataset/game videos/trimmed_videos/clip_1.mp4"
 
-    return tess_path, csv_path, vin_file, im_file, trim_file, clip_1, f_path
+    return ocr_path, roi_path, csv_path, vin_file, im_file, trim_file, clip_1, f_path
