@@ -116,7 +116,7 @@ def tess_dir(dir_path, time_pattern, configure):
             failrec.append(ftail)
 
     # calculating the succes_rate for all frames OCRed
-    success_rate = counter_2/counter_1
+    success_rate = (counter_2/counter_1)*100
 
     # Printing stuff related to ocr success
     print("\nYou found {} out of {} images successfully.".format(counter_2, counter_1))

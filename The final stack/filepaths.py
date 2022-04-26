@@ -4,7 +4,7 @@
 
 def file_paths():
     # working directory root
-    root_path = r"E:/Career files/Degree Thesis"
+    root_path = r"C:\Users\Nasoptop\Desktop\Degree Thesis"
 
     # select the path extracted frames will be saved dimiourgia neou xorou kathe fora?
     tess_path = root_path + r"/Dataset/image processing/cropped_frames_2/"
