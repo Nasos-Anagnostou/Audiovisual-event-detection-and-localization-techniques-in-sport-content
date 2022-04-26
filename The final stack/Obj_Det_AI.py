@@ -1,6 +1,7 @@
 from imageai.Detection.Custom import CustomObjectDetection
 from imageai.Detection.Custom import DetectionModelTrainer
 import os
+import cv2
 
 
 # 1. Train a pre-trained YOLOV3 model with our Data-Set
@@ -23,15 +24,25 @@ def evaluate_models(dataset_dir):
 
 
 # 3. Detection of object with the best model
-def detect_custom_object(dataset_dir, myframe):
-    os.chdir(dataset_dir)
+def detect_custom_object(in_frame):
+
+    my_dir = r"E:\Career files\Degree Thesis\Dataset\Images Dataset\Object_Det_files/"
+    os.chdir(my_dir)
+
     detector = CustomObjectDetection()
     detector.setModelTypeAsYOLOv3()
     detector.setModelPath("detection_model-ex-013--loss-0003.658.h5")
     detector.setJsonPath("json/detection_config.json")
     detector.loadModel()
-    detections, extracted_images = detector.detectObjectsFromImage(input_image=myframe,
-                                                                   output_image_path= r"E:\Career files\Degree Thesis\Dataset\Images Dataset\Object_Det_files\detected.jpg",
+    detections, extracted_images = detector.detectObjectsFromImage(input_image=in_frame,
+                                                                   output_image_path= "dump\detected.jpg",
                                                                    extract_detected_objects=True)
     for detection in detections:
         print(detection["name"], " : ", detection["percentage_probability"], " : ", detection["box_points"])
+
+    img_det = extracted_images[0]
+    #img_d = cv2.imread(img_det)
+    #cv2.imshow("",img_d)
+    #cv2.waitKey(0)
+
+    return img_det
