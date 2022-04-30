@@ -9,6 +9,7 @@ from csv_fun import csv_editor
 from match_fun import match_scl
 from filepaths import file_paths
 from event_clip import clip_creator
+from easyOcr import easyOcr_dir
 
 import timeit
 import pandas as pd
@@ -36,7 +37,11 @@ time_pat = '((1[012]|0[0-9]|[0-9]):([0-9][0-9]))|(([1-5][0-9]|[0-9])(\.|\,)[0-9]
 # tesseract configuration, see tess documentation for more 
 conf = r'--oem 0 --psm 6'
 
-ttags, succ_r, fldim  = tess_dir(tess_path, time_pat, conf)
+# Tesseract
+ttags, succ_r, fldim = tess_dir(tess_path, time_pat, conf)
+
+#easyOcr
+ttags, succ_r = easyOcr_dir(tess_path, time_pat)
 
 
 # 4. Show user the events to choose what event wants to see by selecting sevent_id, using csv_trial()
