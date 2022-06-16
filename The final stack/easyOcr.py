@@ -1,4 +1,8 @@
-# OCR PREPROCESSING TEST
+# author: Nasos Anagnostou
+# Diploma Thesis "Semantic event analysis in sports Video using webcast Text"
+# easyOcr OCR engine used to parse timetags for each frame detected
+# latest update 6/4/22
+
 from filepaths import file_paths
 import glob
 import cv2
@@ -9,14 +13,15 @@ import ntpath
 import easyocr
 from matplotlib import pyplot as plt
 
+
+
 # EasyOcr Reader initialisation
 reader = easyocr.Reader(['en'], gpu=False)
+
 # under minute format
 under_minute_format = '(([1-5][0-9]|[0-9])\.[0-9])'
 
 numbers = re.compile(r'(\d+)')
-
-
 def numericalSort(value):
     parts = numbers.split(value)
     parts[1::2] = map(int, parts[1::2])
@@ -24,12 +29,13 @@ def numericalSort(value):
 
 
 def easyOcr_dir(dir_path, time_pat):
+
     ttags = []
     counter_1 = 0
     counter_2 = 0
 
     # loop for every frame in the dir
-    for filename in sorted(glob.glob(dir_path + '/*.png'), key=numericalSort):
+    for filename in sorted(glob.glob(dir_path + '/*.png'),key=numericalSort):
 
         ftail = ntpath.split(filename)[1]
 

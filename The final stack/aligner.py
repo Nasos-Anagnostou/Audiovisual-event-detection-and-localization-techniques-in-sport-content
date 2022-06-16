@@ -23,11 +23,11 @@ start_time = timeit.default_timer()
 
 
 # 1. initialise file paths with filepaths()
-tess_path, roi_path, csv_path, vinfile, imfile, trimfile, videoclip_1, fpath = file_paths()
+ocr_path, roi_path, csv_path, vinfile, imfile, trimfile, videoclip_1, fpath = file_paths()
 
 
 # 2. get the matching frames with temp img with match_scl()
-myfps = match_scl(fpath, imfile, tess_path, vinfile, 33.5, 34.5)
+myfps = match_scl(fpath, imfile, ocr_path, vinfile, 33.5, 34.5)
 
 
 # 3. ocr the frames mathcing temp with  dir_tess()
@@ -38,13 +38,13 @@ time_pat = '((1[012]|0[0-9]|[0-9]):([0-9][0-9]))|(([1-5][0-9]|[0-9])(\.|\,)[0-9]
 conf = r'--oem 0 --psm 6'
 
 # Tesseract
-ttags, succ_r, fldim = tess_dir(tess_path, time_pat, conf)
+#ttags, succ_r, fldim = tess_dir(ocr_path, time_pat, conf)
 
 #easyOcr
-ttags, succ_r = easyOcr_dir(tess_path, time_pat)
+ttags, succ_r = easyOcr_dir(ocr_path, time_pat)
 
 
-# 4. Show user the events to choose what event wants to see by selecting sevent_id, using csv_trial()
+# 4. Show user the events to choose what event wants to see by selecting event_id, using csv_trial()
 myttag = csv_editor(csv_path)
 
 

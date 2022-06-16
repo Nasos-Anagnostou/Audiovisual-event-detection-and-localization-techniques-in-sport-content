@@ -9,7 +9,7 @@ from pandasgui import show
 def csv_editor (filename):
 
 	# root path of csv files
-	mypath = r"E:/Career files/Degree Thesis/Dataset/play by play text"
+	mypath = r"E:/Career files/Degree Thesis/2. Dataset/play by play text"
 
 	# read csv file and create dataframe
 	df = pd.read_csv(filename) #,index_col ="event_id")
