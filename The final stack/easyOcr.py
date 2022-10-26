@@ -3,15 +3,10 @@
 # easyOcr OCR engine used to parse timetags for each frame detected
 # latest update 6/4/22
 
-from filepaths import file_paths
 import glob
-import cv2
-from PIL import Image, ImageEnhance
-import numpy as np
 import re
 import ntpath
 import easyocr
-from matplotlib import pyplot as plt
 
 
 

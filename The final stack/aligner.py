@@ -20,7 +20,7 @@ from pandasgui import show
 #################################################################################################
 # start the timer
 start_time = timeit.default_timer()
-
+#papari
 
 # 1. initialise file paths with filepaths()
 ocr_path, roi_path, csv_path, vinfile, imfile, trimfile, videoclip_1, fpath = file_paths()
@@ -30,11 +30,12 @@ ocr_path, roi_path, csv_path, vinfile, imfile, trimfile, videoclip_1, fpath = fi
 myfps = match_scl(fpath, imfile, ocr_path, vinfile, 33.5, 34.5)
 
 
-# 3. ocr the frames mathcing temp with  dir_tess()
+# 3. ocr the frames matching temp with  dir_tess()
 
 # time pattern we want to recognise from scorebox
 time_pat = '((1[012]|0[0-9]|[0-9]):([0-9][0-9]))|(([1-5][0-9]|[0-9])(\.|\,)[0-9])'   # maybe use a whitelist?
-# tesseract configuration, see tess documentation for more 
+
+# tesseract configuration, see tesseract documentation for more
 conf = r'--oem 0 --psm 6'
 
 # Tesseract
