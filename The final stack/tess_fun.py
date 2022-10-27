@@ -48,7 +48,7 @@ def tess_dir(dir_path, time_pattern, configure):
 
         # 1. enhance image sharpness given a specific factor
         enhancer = ImageEnhance.Sharpness(pim)
-        factor_sharp = 4.5
+        factor_sharp = 2
         pim_en = enhancer.enhance(factor_sharp)
 
         # 2. enhance image contrast given a specific factor

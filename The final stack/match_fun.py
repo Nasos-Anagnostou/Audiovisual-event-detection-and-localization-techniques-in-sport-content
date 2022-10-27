@@ -7,6 +7,7 @@ import numpy as np
 import math
 import imutils
 import cv2
+from Obj_Det_AI import detect_custom_object
 from moviepy.editor import *
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
@@ -48,6 +49,10 @@ def match_scl(fpath, temp_img, tess_path, vinfile, start_minute, end_minute):
         frameid = cap.get(1)
         ret, frame = cap.read()
         # print('read a new frame:', ret)
+
+        # obj detect with nn model
+        #template_nn = detect_custom_object(frame)
+        #template = cv2.imread(template_nn)  # load the template image
 
         # take 2 frames per every second, one each 500msec
         if ret & ((frameid % math.floor(myfps) == 0) | (frameid % math.floor(myfps) == math.ceil(myfps / 2))):

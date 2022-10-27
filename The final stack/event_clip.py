@@ -19,7 +19,7 @@ def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
 
             # Clip creation creating subclip with duration [mysec-4, mysec+2]  #vrisko to sec thelo [mysec-6, mysec+2] h [fr_id -(fps* 6), fr_id +(fps* 2)]
             mysec = fr_id / myfps
-            ffmpeg_extract_subclip(fpath, mysec - 4, mysec + 2, targetname=videoclip_1)
+            ffmpeg_extract_subclip(fpath, mysec - 3, mysec + 1, targetname=videoclip_1)
             break
 
     # Play the video clip created
