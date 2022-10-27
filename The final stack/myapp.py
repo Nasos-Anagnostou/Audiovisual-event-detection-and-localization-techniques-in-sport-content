@@ -1,30 +1,60 @@
 import streamlit as st
+import pandas as pd
 from filepaths import file_paths
 
+# background wallpaper set
+def add_bg_from_url():
+    st.markdown(
+        f"""
+       <style>
+       .stApp {{
+       background-image: url("https://wallpaper.dog/large/968252.jpg");
+       background-attachment: fixed;
+       background-size: cover
+       }}
+       </style>
+       """,
+        unsafe_allow_html=True
+    )
+
+# The title
+st.title("HIGHLIGHT GENERATOR 🏀🏆", anchor=None)
+add_bg_from_url()
+
+#2 tabs
 tab1, tab2 = st.tabs(["Choose game", "Choose Highlight"])
 
 with tab1:
-    st.radio('Select one:', [1, 2])
 
     mylist = file_paths()
 
-    def add_bg_from_url():
-        st.markdown(
-        f"""
-        <style>
-        .stApp {{
-        background-image: url("https://wallpaper.dog/large/968252.jpg");
-        background-attachment: fixed;
-        background-size: cover
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-        )
-    add_bg_from_url()
 
-    st.button("select", key=None, help=None, on_click=None, args=None, kwargs=None, disabled=False)
-    st.number_input("select game", min_value=0, max_value=1000, value= 0, step=None, format=None, key=None, help=None, on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
+
+    # ftiaxno ena koumpi gia na ginetai kati
+    button1 = st.button("Video", key=None, help=None, on_click = None, args=None, kwargs=None, disabled=False)
+    button2 = st.button("Photo", key=None, help=None, on_click=None, args=None, kwargs=None, disabled=False)
+    button3 = st.button("Highlight Sheet", key=None, help=None, on_click=None, args=None, kwargs=None, disabled=False)
+
+    if button1:
+        st.write('Why hello there')
+        st.video(mylist[4], format="video/mp4", start_time=0)
+    else:
+        st.write('Goodbye')
+
+    if button2:
+        camera = st.camera_input("Camera", key=None, help=None, on_change=print("photo taken"), args=None, kwargs=None,
+                                 disabled=False, label_visibility="visible")
+    else:
+        st.write('Goodbye')
+    st.file_uploader("*Upload*", type=None, accept_multiple_files=False, key=None, help=None, on_change=None, args=None,
+                     kwargs=None, disabled=False, label_visibility="visible")
+
+    st.number_input("select game", min_value=0, max_value=10, value= 0, step=None, format=None, key=None, help=None,
+                    on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
+
+    if button3:
+        df = pd.read_csv(mylist[1])
+        st.dataframe(df)
 
 
 with tab2:
@@ -44,3 +74,9 @@ with tab2:
 
 
     st.video(mylist[4], format="video/mp4", start_time=0)
+
+    name = st.text_input('Name')
+    if not name:
+        st.warning('Please input a name.')
+        st.stop()
+    st.success('Thank you for inputting a name.')

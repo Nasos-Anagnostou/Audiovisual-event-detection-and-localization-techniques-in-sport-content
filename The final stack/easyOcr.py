@@ -1,9 +1,6 @@
 # OCR PREPROCESSING TEST
 from filepaths import file_paths
 import glob
-import cv2
-from PIL import Image, ImageEnhance
-import numpy as np
 import re
 import ntpath
 
