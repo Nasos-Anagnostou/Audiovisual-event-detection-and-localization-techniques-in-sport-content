@@ -2,10 +2,14 @@ import streamlit as st
 import pandas as pd
 from filepaths import file_paths
 
+#config of the page
 st.set_page_config(page_title="SPORTS HIGHLIGHT GENERATOR🏀🏆", page_icon="🏀", layout="centered",
                    initial_sidebar_state="auto", menu_items=None)
 
-# background wallpaper set
+# The title
+st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
+
+# set background wallpaper and subtitle title & sidebar name
 def add_bg_from_url():
     st.markdown(
         f"""
@@ -19,16 +23,15 @@ def add_bg_from_url():
        """,
         unsafe_allow_html=True
     )
+    st.markdown("# Homepage 🏀")
+    st.sidebar.markdown("# SPORTS HIGHLIGHT GENERATOR 🏀🏆")
 add_bg_from_url()
 
-st.markdown("# SPORTS HIGHLIGHT GENERATOR 🏀")
-st.sidebar.markdown("# SPORTS HIGHLIGHT GENERATOR 🏀🏆")
+################################################# CODE STUFF ######################################
 
 #parse the filepaths
 mylist = file_paths()
 
-# The title
-#st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
 
 #Create 2 tabs
 tab1, tab2 = st.tabs(["Choose game", "Choose Highlight"])
@@ -48,17 +51,19 @@ with tab1:
     elif button2:
         camera = st.camera_input("Camera", key=None, help=None, on_change=None, args=None, kwargs=None,
                                  disabled=False, label_visibility="visible")
+    elif button3:
+        df = pd.read_csv(mylist[2])
+        st.dataframe(df)
 
 
+#testing upload
     st.file_uploader("*Upload*", type=None, accept_multiple_files=False, key=None, help=None, on_change=None, args=None,
                      kwargs=None, disabled=False, label_visibility="visible")
 
+#testing number input
     st.number_input("select game", min_value=0, max_value=10, value= 0, step=None, format=None, key=None, help=None,
                     on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
 
-    if button3:
-        df = pd.read_csv(mylist[2])
-        st.dataframe(df)
 
 #Tab n2
 with tab2:
