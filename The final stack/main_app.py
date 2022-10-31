@@ -3,6 +3,8 @@ import pandas as pd
 from filepaths import file_paths
 
 
+
+
 # background wallpaper set
 def add_bg_from_url():
     st.markdown(
@@ -18,35 +20,36 @@ def add_bg_from_url():
         unsafe_allow_html=True
     )
 
-# The title
-st.title("HIGHLIGHT GENERATOR 🏀🏆", anchor=None)
 add_bg_from_url()
+st.markdown("# SPORTS HIGHLIGHT GENERATOR 🏀")
+st.sidebar.markdown("# SPORTS HIGHLIGHT GENERATOR 🏀🏆")
 
-#2 tabs
+#parse the filepaths
+mylist = file_paths()
+
+# The title
+#st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
+
+#Create 2 tabs
 tab1, tab2 = st.tabs(["Choose game", "Choose Highlight"])
 
+#Tab n1
 with tab1:
 
-    mylist = file_paths()
-
-
-
-    # ftiaxno ena koumpi gia na ginetai kati
-    button1 = st.button("Video", key=None, help=None, on_click = None, args=None, kwargs=None, disabled=False)
+# ftiaxno ena koumpi gia na ginetai kati
+    button1 = st.button("Game Video", key=None, help=None, on_click = None, args=None, kwargs=None, disabled=False)
     button2 = st.button("Photo", key=None, help=None, on_click=None, args=None, kwargs=None, disabled=False)
     button3 = st.button("Highlight Sheet", key=None, help=None, on_click=None, args=None, kwargs=None, disabled=False)
 
+# enallagi features metaksu koumpion
     if button1:
-        st.write('Why hello there')
-        st.video(mylist[5], format="video/mp4", start_time=0)
-    else:
-        st.write('Goodbye')
-
-    if button2:
-        camera = st.camera_input("Camera", key=None, help=None, on_change=print("photo taken"), args=None, kwargs=None,
+        st.write('This is the highlight you wanted')
+        st.video(mylist[7], format="video/mp4", start_time=0)
+    elif button2:
+        camera = st.camera_input("Camera", key=None, help=None, on_change=None, args=None, kwargs=None,
                                  disabled=False, label_visibility="visible")
-    else:
-        st.write('Goodbye')
+
+
     st.file_uploader("*Upload*", type=None, accept_multiple_files=False, key=None, help=None, on_change=None, args=None,
                      kwargs=None, disabled=False, label_visibility="visible")
 
@@ -57,7 +60,7 @@ with tab1:
         df = pd.read_csv(mylist[2])
         st.dataframe(df)
 
-
+#Tab n2
 with tab2:
 
     #st.image("https://wallpaper.dog/large/968252.jpg", caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
@@ -74,7 +77,7 @@ with tab2:
     st.write("Outside the form")
 
 
-    st.video(mylist[4], format="video/mp4", start_time=0)
+    st.video(mylist[7], format="video/mp4", start_time=0)
 
     name = st.text_input('Name')
     if not name:
