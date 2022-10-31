@@ -3,7 +3,7 @@ import pandas as pd
 from filepaths import file_paths
 
 #config of the page
-st.set_page_config(page_title="SPORTS HIGHLIGHT GENERATOR🏀🏆", page_icon="🏀", layout="centered",
+st.set_page_config(page_title="SPORTS HIGHLIGHT GENERATOR🏀🏆", page_icon="🏀", layout="wide",
                    initial_sidebar_state="auto", menu_items=None)
 
 # The title
