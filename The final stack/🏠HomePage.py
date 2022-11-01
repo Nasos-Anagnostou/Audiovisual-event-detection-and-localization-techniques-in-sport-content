@@ -1,15 +1,10 @@
 import streamlit as st
 import pandas as pd
-from tess_fun import tess_dir
-from csv_fun import csv_editor
-from match_fun import match_scl
-from filepaths import file_paths
-from event_clip import clip_creator
-from easyOcr import easyOcr_dir
 
-import sys
-sys.path.insert(0, 'pages/2📸Game_Highlights.py')
 from filepaths import file_paths
+
+Game_Highlights = __import__('pages.02_📸_Game_Highlights.py')
+
 
 #config of the page
 st.set_page_config(page_title="SPORTS HIGHLIGHT GENERATOR🏀🏆", page_icon="🏀", layout="wide",
@@ -38,7 +33,7 @@ def add_bg_from_url():
 add_bg_from_url()
 
 ################################################# CODE STUFF ######################################
-st.write(the)
+st.write(2)
 #parse the filepaths
 mylist = file_paths()
 
