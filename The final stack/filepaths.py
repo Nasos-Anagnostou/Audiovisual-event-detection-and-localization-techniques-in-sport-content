@@ -2,6 +2,7 @@
 # Diploma Thesis "Semantic event analysis in sports Video using webcast Text"
 # Create file paths - initialise each file path easy 
 
+
 def file_paths():
     # working directory root
     root_path = r"E:\Career files\Degree Thesis"
