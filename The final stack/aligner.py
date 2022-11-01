@@ -12,9 +12,6 @@ from event_clip import clip_creator
 from easyOcr import easyOcr_dir
 
 import timeit
-import pandas as pd
-from pandasgui import show
-
 
 
 #################################################################################################

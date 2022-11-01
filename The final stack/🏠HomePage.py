@@ -1,8 +1,14 @@
 import streamlit as st
 import pandas as pd
-import 📸Game Highlights .py
+from tess_fun import tess_dir
+from csv_fun import csv_editor
+from match_fun import match_scl
+from filepaths import file_paths
+from event_clip import clip_creator
+from easyOcr import easyOcr_dir
 
-import filepaths
+import sys
+sys.path.insert(0, 'pages/2📸Game_Highlights.py')
 from filepaths import file_paths
 
 #config of the page
@@ -32,7 +38,7 @@ def add_bg_from_url():
 add_bg_from_url()
 
 ################################################# CODE STUFF ######################################
-
+st.write(the)
 #parse the filepaths
 mylist = file_paths()
 
@@ -98,6 +104,7 @@ mylist = file_paths()
 "st.session_state.object:", st.session_state
 
 number = st.slider("A number", 1, 10, key = "slider")
+
 
 st.write(st.session_state)
 
