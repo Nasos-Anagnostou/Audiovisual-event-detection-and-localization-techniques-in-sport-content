@@ -27,7 +27,7 @@ def csv_editor (filename):
 	show(df)
 
 	# ask user to choose which event_id he wants to watch
-	myevid = int(input("Give me the event_id you want to watch:"))
+	myevid = int(input("Give me the event_id you want to watch:"))  # EDW THELEI ENAN ELEGXO TIMIS
 	# future use of the quarter for now not in use
 	myquart = "2nd Quarter"
 

@@ -1,8 +1,7 @@
 # author: Nasos Anagnostou 
 # Diploma Thesis "Semantic event analysis in sports Video using webcast Text"
 # main script calling functions
-# latest update 18/6/21
-
+# latest update 2/11/22
 
 from csv_fun import csv_editor
 from match_fun import match_scl
@@ -18,15 +17,12 @@ import timeit
 #################################################################################################
 # start the timer
 start_time = timeit.default_timer()
-#papari
 
 # 1. initialise file paths with filepaths()
 ocr_path, roi_path, csv_path, vinfile, imfile, trimfile, videoclip_1, fpath = file_paths()
 
-
 # 2. get the matching frames with temp img with match_scl()
-myfps = match_scl(fpath, imfile, ocr_path, vinfile, 33.5, 34.5)
-
+#myfps = match_scl(fpath, imfile, ocr_path, vinfile, 33.5, 34)
 
 # 3. ocr the frames matching temp with  dir_tess()
 
@@ -35,27 +31,20 @@ time_pat = '((1[012]|0[0-9]|[0-9]):([0-9][0-9]))|(([1-5][0-9]|[0-9])(\.|\,)[0-9]
 
 # tesseract configuration, see tesseract documentation for more
 conf = r'--oem 0 --psm 6'
-
 # Tesseract
-ttags, succ_r = tess_dir(ocr_path, time_pat, conf)
+#ttags, succ_r = tess_dir(ocr_path, time_pat, conf)
 
 #easyOcr
-ttags, succ_r = easyOcr_dir(ocr_path, time_pat)
-
+#ttags, succ_r = easyOcr_dir(ocr_path, time_pat)
 
 # 4. Show user the events to choose what event wants to see by selecting event_id, using csv_trial()
-myttag = csv_editor(csv_path)
-
+#myttag = csv_editor(csv_path)
 
 # 5. match event_id timetag with ocr timetag and get the specific frame_id to create videoclip
-# create the clip of the event user wants to see
-clip_creator(myttag, ttags, myfps, fpath, videoclip_1)
+#clip_creator(myttag, ttags, myfps, fpath, videoclip_1)
 
-
-# stop the timer print time of execution 
+# stop the timer print time of execution
 print("\nThe time difference is :", timeit.default_timer() - start_time)
 
 ################################################################################################
 
-
-print(Game_Highlights.the_game)
