@@ -3,15 +3,13 @@
 # main script calling functions
 # latest update 2/11/22
 
-from csv_fun import csv_editor
-from match_fun import match_scl
+import timeit
 from filepaths import file_paths
-from event_clip import clip_creator
-from ocr_fun import tess_dir, easyOcr_dir
 
+from all_functions import tess_dir, easyOcr_dir, match_scl, csv_editor, clip_creator
 from pages import Game_Highlights
 
-import timeit
+
 
 
 #################################################################################################
