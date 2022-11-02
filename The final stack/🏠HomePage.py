@@ -1,9 +1,6 @@
 import streamlit as st
-import pandas as pd
-
 from filepaths import file_paths
-
-Game_Highlights = __import__('pages.02_📸_Game_Highlights.py')
+import pandas as pd
 
 
 #config of the page
@@ -33,7 +30,7 @@ def add_bg_from_url():
 add_bg_from_url()
 
 ################################################# CODE STUFF ######################################
-st.write(2)
+
 #parse the filepaths
 mylist = file_paths()
 

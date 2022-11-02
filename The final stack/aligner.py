@@ -4,12 +4,13 @@
 # latest update 18/6/21
 
 
-from tess_fun import tess_dir
 from csv_fun import csv_editor
 from match_fun import match_scl
 from filepaths import file_paths
 from event_clip import clip_creator
-from easyOcr import easyOcr_dir
+from ocr_fun import tess_dir, easyOcr_dir
+
+from pages import Game_Highlights
 
 import timeit
 
@@ -36,7 +37,7 @@ time_pat = '((1[012]|0[0-9]|[0-9]):([0-9][0-9]))|(([1-5][0-9]|[0-9])(\.|\,)[0-9]
 conf = r'--oem 0 --psm 6'
 
 # Tesseract
-#ttags, succ_r, fldim = tess_dir(ocr_path, time_pat, conf)
+ttags, succ_r = tess_dir(ocr_path, time_pat, conf)
 
 #easyOcr
 ttags, succ_r = easyOcr_dir(ocr_path, time_pat)
@@ -57,3 +58,4 @@ print("\nThe time difference is :", timeit.default_timer() - start_time)
 ################################################################################################
 
 
+print(Game_Highlights.the_game)

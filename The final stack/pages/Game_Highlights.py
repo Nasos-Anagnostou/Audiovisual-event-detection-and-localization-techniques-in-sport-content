@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
-import aligner
+
 
 #inlcude paths
 csv_1 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/cska_barc.csv"
@@ -95,4 +95,3 @@ if (not mydf.empty) and (the_game != "Chose Game"):
 
 print("Video name is:", the_game)
 
-print("This is the connection:", aligner.time_pat)
