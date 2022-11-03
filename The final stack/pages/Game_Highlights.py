@@ -1,9 +1,15 @@
 import streamlit as st
+from streamlit_extras.switch_page_button import switch_page
 import csv
 import filepaths
 import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
-from all_functions import clip_creator
+
+
+
+# Initialization of the event variable
+if "the_event" not in st.session_state:
+    st.session_state['the_event'] = "0"
 
 # my event
 my_event = 0
@@ -101,22 +107,12 @@ if (not mydf.empty) and (the_game != "Chose Game"):
     my_event = mydf.iloc[0, 1]
     print("The timetag chosen by user is:", my_event)
 
-    # load timetags from file
-    my_tags = []
-    with open(fl_timetag, newline='') as csvfile:
-        data = csv.reader(csvfile)
-        for row in data:
-            my_tags.append(row)
+    # store the event to pass it next page
+    st.session_state.the_event = my_event
+    #press button to watch it in the HomePage
+    button_to_home = st.button("Watch the Highlight!")
+    if button_to_home:
+        switch_page('games videos')
 
-    # load fps from file
-    with open(fl_vidfps, "r") as file:
-        my_fps = float(file.read())
-
-    # create the Highlight clip if the timetag is correct
-    clip_creator(my_event, my_tags, my_fps, filepaths.f_path, filepaths.clip_1)
-    if 1:
-        st.video(filepaths.clip_1, format="video/mp4", start_time=0)
-    else:
-        print("The video doesnt exist")
 
 
