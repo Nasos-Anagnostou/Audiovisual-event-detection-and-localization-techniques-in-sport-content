@@ -25,11 +25,8 @@ from Obj_Det_AI import detect_custom_object
 
 
 ############################################# OCR FUNCTIONS #############################################
-# tesseract allocation
-pytesseract.pytesseract.tesseract_cmd = r"E:\programs\tessaract\tesseract.exe"
-# EasyOcr Reader initialisation
-reader = easyocr.Reader(['en'], gpu=False)
-
+# time pattern we want to recognise from scorebox
+time_pat = '((1[012]|0[0-9]|[0-9]):([0-9][0-9]))|(([1-5][0-9]|[0-9])(\.|\,)[0-9])'   # maybe use a whitelist?
 # under minute format
 under_minute_format = '(([1-5][0-9]|[0-9])\.[0-9])'
 
@@ -42,6 +39,10 @@ def numericalSort(value):
 
 # tesseract ocr function
 def tess_dir(dir_path, time_pattern, configure):
+
+    # tesseract allocation
+    pytesseract.pytesseract.tesseract_cmd = r"E:\programs\tessaract\tesseract.exe"
+
     # initialise vars
     counter_1 = 0
     counter_2 = 0
@@ -144,6 +145,8 @@ def tess_dir(dir_path, time_pattern, configure):
 # easyOcr ocr function
 def easyOcr_dir(dir_path, time_pat):
 
+    # EasyOcr Reader initialisation
+    reader = easyocr.Reader(['en'], gpu=False)
     ttags = []
     counter_1 = 0
     counter_2 = 0
@@ -378,27 +381,28 @@ def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
 
             # Clip creation creating subclip with duration [mysec-4, mysec+2]  #vrisko to sec thelo [mysec-6, mysec+2] h [fr_id -(fps* 6), fr_id +(fps* 2)]
             mysec = fr_id / myfps
-            ffmpeg_extract_subclip(fpath, mysec - 3, mysec + 1, targetname=videoclip_1)
+            ffmpeg_extract_subclip(fpath, mysec - 5, mysec + 1, targetname=videoclip_1)
             break
 
-    # Play the video clip created
-    cap = cv2.VideoCapture(videoclip_1)
-    fps = int(cap.get(cv2.CAP_PROP_FPS))   # or cap.get(5)
-
-    if not cap.isOpened():
-        print("Error File Not Found")
-
-    # setting playback for video clip created
-    while cap.isOpened():
-        ret,frame= cap.read()
-
-        if ret:
-            time.sleep(1/fps)
-            cv2.imshow('frame', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-        else:
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
+    # # Play the video clip created
+    # cap = cv2.VideoCapture(videoclip_1)
+    # fps = int(cap.get(cv2.CAP_PROP_FPS))   # or cap.get(5)
+    #
+    # if not cap.isOpened():
+    #     print("Error File Not Found")
+    #
+    # # setting playback for video clip created
+    # while cap.isOpened():
+    #     ret,frame= cap.read()
+    #
+    #     if ret:
+    #         time.sleep(1/fps)
+    #         cv2.imshow('frame', frame)
+    #         if cv2.waitKey(1) & 0xFF == ord('q'):
+    #             break
+    #     else:
+    #         break
+    #
+    # # close capture
+    # cap.release()
+    # cv2.destroyAllWindows()

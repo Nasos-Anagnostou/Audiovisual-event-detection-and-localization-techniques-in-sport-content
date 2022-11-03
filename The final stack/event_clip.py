@@ -41,5 +41,6 @@ def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
         else:
             break
 
+    # close capture
     cap.release()
     cv2.destroyAllWindows()

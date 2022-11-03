@@ -29,7 +29,7 @@ def make_df(data):
     gb = GridOptionsBuilder.from_dataframe(data)
     gb.configure_pagination(paginationAutoPageSize=True)  # Add pagination
     gb.configure_side_bar()  # Add a sidebar
-    gb.configure_selection('single', use_checkbox=True,
+    gb.configure_selection('single', use_checkbox=False,
                            groupSelectsChildren="Group checkbox select children")  # Enable multi-row selection
     gridOptions = gb.build()
 

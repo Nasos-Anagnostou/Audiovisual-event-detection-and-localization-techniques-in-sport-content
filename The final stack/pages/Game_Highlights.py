@@ -2,12 +2,17 @@ import streamlit as st
 import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
+import all_functions
+from all_functions import *
+
+# my event
+my_event = 0
 
 #inlcude paths
 csv_1 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/cska_barc.csv"
 csv_2 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/oly_pao.csv"
 csv_3 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/cska_bayern.csv"
-vidflag=0
+
 
 # The title
 st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
@@ -73,7 +78,6 @@ if the_game == "CSKA Moscow Vs Barcelona":
     st.write('This is the ' + the_game + ' play by play text')
     df1 = pd.read_csv(csv_1)
     mydf = make_df(df1)
-    vidflag = 1    # gia na steilo to video sto backend
 
 elif the_game == "Olympiakos Vs Panathinaikos":
     st.write('This is the ' + the_game + ' play by play text')
@@ -92,6 +96,8 @@ elif the_game == "Chose Game":
 if (not mydf.empty) and (the_game != "Chose Game"):
     my_event = mydf.iloc[0, 1]
     print("The timetag is:", my_event)
+
+
 
 print("Video name is:", the_game)
 
