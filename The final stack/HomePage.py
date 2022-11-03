@@ -1,5 +1,5 @@
 import streamlit as st
-from filepaths import file_paths
+import filepaths
 import pandas as pd
 
 
@@ -30,10 +30,6 @@ def add_bg_from_url():
 add_bg_from_url()
 
 ################################################# CODE STUFF ######################################
-
-#parse the filepaths
-mylist = file_paths()
-
 
 # #Create 2 tabs
 # tab1, tab2 = st.tabs(["Choose game", "Choose Highlight"])

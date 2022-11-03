@@ -388,9 +388,7 @@ def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
             os.remove(videoclip_1)
             print("Deleting the old file")
         else:
-            print("The file does not exist to remove")
-
-
+            continue
 
     # # Play the video clip created
     # cap = cv2.VideoCapture(videoclip_1)

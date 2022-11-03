@@ -1,9 +1,9 @@
 import streamlit as st
+import csv
+import filepaths
 import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
-
-import all_functions
-from all_functions import *
+from all_functions import clip_creator
 
 # my event
 my_event = 0
@@ -12,7 +12,10 @@ my_event = 0
 csv_1 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/cska_barc.csv"
 csv_2 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/oly_pao.csv"
 csv_3 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/cska_bayern.csv"
-
+fl_timetag = "E:\\Career files\Degree Thesis\\1. Coding general\\GIT project" \
+               "\\Audiovisual-event-detection-and-localization-techniques-in-sport-content\\The final stack\\out.csv"
+fl_vidfps = "E:\\Career files\Degree Thesis\\1. Coding general\\GIT project" \
+               "\\Audiovisual-event-detection-and-localization-techniques-in-sport-content\\The final stack\\video_fps.txt"
 
 # The title
 st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
@@ -78,6 +81,7 @@ if the_game == "CSKA Moscow Vs Barcelona":
     st.write('This is the ' + the_game + ' play by play text')
     df1 = pd.read_csv(csv_1)
     mydf = make_df(df1)
+    vidflag = 1    # gia na steilo to video sto backend
 
 elif the_game == "Olympiakos Vs Panathinaikos":
     st.write('This is the ' + the_game + ' play by play text')
@@ -92,12 +96,27 @@ elif the_game == "CSKA Moscow Vs Bayern Munich":
 elif the_game == "Chose Game":
     mydf = pd.DataFrame()
 
-# store the event_id for backend
+# If a game is chosen
 if (not mydf.empty) and (the_game != "Chose Game"):
     my_event = mydf.iloc[0, 1]
-    print("The timetag is:", my_event)
+    print("The timetag chosen by user is:", my_event)
 
+    # load timetags from file
+    my_tags = []
+    with open(fl_timetag, newline='') as csvfile:
+        data = csv.reader(csvfile)
+        for row in data:
+            my_tags.append(row)
 
+    # load fps from file
+    with open(fl_vidfps, "r") as file:
+        my_fps = float(file.read())
 
-print("Video name is:", the_game)
+    # create the Highlight clip if the timetag is correct
+    clip_creator(my_event, my_tags, my_fps, filepaths.f_path, filepaths.clip_1)
+    if 1:
+        st.video(filepaths.clip_1, format="video/mp4", start_time=0)
+    else:
+        print("The video doesnt exist")
+
 
