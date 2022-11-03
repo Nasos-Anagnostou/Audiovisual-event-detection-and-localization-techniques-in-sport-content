@@ -4,6 +4,7 @@
 # latest update 2/11/22
 
 # ALL THE IMPORTS NEEDED
+import os
 import pytesseract
 import easyocr
 import cv2
@@ -17,7 +18,6 @@ import math
 import imutils
 from PIL import Image, ImageEnhance
 from pandasgui import show
-import time
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 from moviepy.editor import *
 from Obj_Det_AI import detect_custom_object
@@ -375,14 +375,22 @@ def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
     for itime, fid in ttaglist:
 
         if myttag in itime:
-
             fr_id = float(fid)
             print("\nFound timestamp: {0} in frame_id: {1}".format(itime, fr_id))
 
             # Clip creation creating subclip with duration [mysec-4, mysec+2]  #vrisko to sec thelo [mysec-6, mysec+2] h [fr_id -(fps* 6), fr_id +(fps* 2)]
             mysec = fr_id / myfps
             ffmpeg_extract_subclip(fpath, mysec - 5, mysec + 1, targetname=videoclip_1)
+
             break
+
+        if os.path.exists(videoclip_1):
+            os.remove(videoclip_1)
+            print("Deleting the old file")
+        else:
+            print("The file does not exist to remove")
+
+
 
     # # Play the video clip created
     # cap = cv2.VideoCapture(videoclip_1)

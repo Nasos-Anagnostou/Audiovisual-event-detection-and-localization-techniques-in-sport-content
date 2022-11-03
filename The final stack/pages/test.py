@@ -1,10 +1,11 @@
 import streamlit as st
 
-from csv_fun import csv_editor
+import aligner
+import csv
 import filepaths
 import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
-from all_functions import easyOcr_dir, clip_creator
+from all_functions import clip_creator
 
 # my event
 my_event = 0
@@ -13,6 +14,8 @@ my_event = 0
 csv_1 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/cska_barc.csv"
 csv_2 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/oly_pao.csv"
 csv_3 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/cska_bayern.csv"
+filename = "E:\\Career files\Degree Thesis\\1. Coding general\\GIT project" \
+               "\\Audiovisual-event-detection-and-localization-techniques-in-sport-content\\The final stack\\out.csv"
 
 
 # The title
@@ -98,9 +101,19 @@ elif the_game == "Chose Game":
 if (not mydf.empty) and (the_game != "Chose Game"):
     my_event = mydf.iloc[0, 1]
     print("The timetag is:", my_event)
-    ttags, succ_r = easyOcr_dir(filepaths.ocr_path, filepaths.time_pat)
-    clip_creator(my_event, ttags, 25, filepaths.f_path, filepaths.clip_1)
-    st.video(filepaths.clip_1, format="video/mp4", start_time=0)
+
+    # fortono tin lista me ta timetags apo to arxeio
+    my_tags = []
+    with open(filename, newline='') as csvfile:
+        data = csv.reader(csvfile)
+        for row in data:
+            my_tags.append(row)
+
+    clip_creator(my_event, my_tags, aligner.myfps, filepaths.f_path, filepaths.clip_1)
+    if 1:
+        st.video(filepaths.clip_1, format="video/mp4", start_time=0)
+    else:
+        print("The video doesnt exist")
 
 
 
