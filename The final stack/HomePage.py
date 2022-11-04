@@ -1,6 +1,7 @@
 import streamlit as st
 import filepaths
 import pandas as pd
+from streamlit_extras.app_logo import add_logo
 
 
 #config of the page
@@ -25,6 +26,8 @@ def add_bg_from_url():
        """,
         unsafe_allow_html=True
     )
+    add_logo("https://i0.wp.com/www.esleschool.com/wp-content/uploads/2021/03/sports-1.png?resize=120%2C120&ssl=1")
+
 
 add_bg_from_url()
 
@@ -32,6 +35,17 @@ st.markdown("# Homepage 🏀")
 st.sidebar.success("Select one of the above pages")
 
 ################################################# CODE STUFF ######################################
+
+
+
+
+
+
+
+
+
+
+
 
 # #Create 2 tabs
 # tab1, tab2 = st.tabs(["Choose game", "Choose Highlight"])

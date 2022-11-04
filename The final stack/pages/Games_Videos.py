@@ -25,6 +25,8 @@ st.sidebar.markdown("# Game Videos 📺")
 # return to homepage button
 if st.sidebar.button("Return to Homepage🏠"):
     switch_page('homepage')
+elif st.sidebar.button("Chose again Highlight 📸"):
+    switch_page("game highlights")
 
 
 # load timetags from file

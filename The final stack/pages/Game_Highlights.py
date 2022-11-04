@@ -26,7 +26,7 @@ add_bg_from_url()
 st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
 st.markdown("# Highlights of the Game 📸️")
 # sidebar title
-st.sidebar.markdown("#Highlights of the Game 📸️️")
+st.sidebar.markdown("#Highlights of the Game 📸️")
 # return to homepage button
 if st.sidebar.button("Return to Homepage🏠"):
     switch_page('homepage')
