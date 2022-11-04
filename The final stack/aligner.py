@@ -35,12 +35,12 @@ time_pat = '((1[012]|0[0-9]|[0-9]):([0-9][0-9]))|(([1-5][0-9]|[0-9])(\.|\,)[0-9]
 #ttags, succ_r = tess_dir(filepaths.ocr_path, time_pat, conf)
 
 #easyOcr
-# ttags, succ_r = easyOcr_dir(filepaths.ocr_path, time_pat)    # na ta kanw save kapou ta ttags
-#
-# # store ttags list for frontend
-# with open("out.csv", "w", newline='') as f:
-#     wr = csv.writer(f)
-#     wr.writerows(ttags)
+ttags, succ_r = easyOcr_dir(filepaths.ocr_path, time_pat)    # na ta kanw save kapou ta ttags
+
+# store ttags list for frontend
+with open("out.csv", "w", newline='') as f:
+    wr = csv.writer(f)
+    wr.writerows(ttags)
 
 # 4. Show user the events to choose what event wants to see by selecting event_id, using csv_trial()
 #myttag = csv_editor(filepaths.csv_path)

@@ -3,6 +3,7 @@ import streamlit as st
 import csv
 from all_functions import clip_creator
 import filepaths
+from HomePage import add_bg_from_url
 
 
 ####################################################### FILE PATHS ###############################################################
@@ -12,12 +13,18 @@ fl_vidfps = "E:\\Career files\Degree Thesis\\1. Coding general\\GIT project" \
                "\\Audiovisual-event-detection-and-localization-techniques-in-sport-content\\The final stack\\video_fps.txt"
 
 
+######################################## THE LAYOUT OF THE PAGE ###########################################
+# add the background image
+add_bg_from_url()
 # The title
 st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
-
 st.markdown("# Game Videos 📺")
+st.write("\n")
+# sidebar title
 st.sidebar.markdown("# Game Videos 📺")
-
+# return to homepage button
+if st.sidebar.button("Return to Homepage🏠"):
+    switch_page('homepage')
 
 
 # load timetags from file
@@ -34,9 +41,9 @@ with open(fl_vidfps, "r") as file:
 # get the stored event from another page
 myevent = st.session_state.the_event
 
-# create the Highlight clip if the timetag is correct
-clip_creator(myevent, my_tags, my_fps, filepaths.f_path, filepaths.clip_1)
-if 1:
+# create the Highlight clip if the timetag is correct else display error message
+vid_exist = clip_creator(myevent, my_tags, my_fps, filepaths.f_path, filepaths.clip_1)
+if vid_exist:
     st.video(filepaths.clip_1, format="video/mp4", start_time=0)
 else:
-    print("The video doesnt exist")
+    st.write("We are sorry 😏, the Highlight you want to watch doesnt exist in our database")

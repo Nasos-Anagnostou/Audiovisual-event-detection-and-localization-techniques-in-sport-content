@@ -25,9 +25,11 @@ def add_bg_from_url():
        """,
         unsafe_allow_html=True
     )
-    st.markdown("# Homepage 🏀")
-    st.sidebar.success("Select one of the above pages")
+
 add_bg_from_url()
+
+st.markdown("# Homepage 🏀")
+st.sidebar.success("Select one of the above pages")
 
 ################################################# CODE STUFF ######################################
 
@@ -89,10 +91,4 @@ add_bg_from_url()
 #     st.success('Thank you for inputting a name.')
 
 
-"st.session_state.object:", st.session_state
-
-number = st.slider("A number", 1, 10, key = "slider")
-
-
-st.write(st.session_state)
 

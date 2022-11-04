@@ -372,7 +372,9 @@ def csv_editor (filename):
 # create the Highlight video clip
 def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
 
+    vflag = False
     for itime, fid in ttaglist:
+
 
         if myttag in itime:
             fr_id = float(fid)
@@ -381,7 +383,7 @@ def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
             # Clip creation creating subclip with duration [mysec-4, mysec+2]  #vrisko to sec thelo [mysec-6, mysec+2] h [fr_id -(fps* 6), fr_id +(fps* 2)]
             mysec = fr_id / myfps
             ffmpeg_extract_subclip(fpath, mysec - 5, mysec + 1, targetname=videoclip_1)
-
+            vflag = True
             break
 
         if os.path.exists(videoclip_1):
@@ -412,3 +414,4 @@ def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
     # # close capture
     # cap.release()
     # cv2.destroyAllWindows()
+    return vflag

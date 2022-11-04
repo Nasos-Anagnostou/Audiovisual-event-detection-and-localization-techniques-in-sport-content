@@ -22,7 +22,6 @@ with open(fl_timetag, newline='') as csvfile:
 with open(fl_vidfps, "r") as file:
     my_fps = float(file.read())
 
-st.write(st.session_state.the_event)
 myevent = st.session_state.the_event
 
 
