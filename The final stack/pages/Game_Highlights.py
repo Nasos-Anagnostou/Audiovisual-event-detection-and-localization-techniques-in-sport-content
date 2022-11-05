@@ -20,15 +20,15 @@ csv_3 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/cska_bayern.
 
 
 ######################################## THE LAYOUT OF THE PAGE ###########################################
+highlights = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Highlights of the Game 📸️</strong></p>'
+
 # add the background image
 add_bg_from_url()
-# The title
-st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
-st.markdown("# Highlights of the Game 📸️")
-# sidebar title
-st.sidebar.markdown("#Highlights of the Game 📸️")
+st.markdown(highlights, unsafe_allow_html=True)
+# # sidebar title
+# st.sidebar.markdown("# Highlights of the Game 📸️")
 # return to homepage button
-if st.sidebar.button("Return to Homepage🏠"):
+if st.sidebar.button("🏠Return to Homepage"):
     switch_page('homepage')
 
 
@@ -61,7 +61,7 @@ def make_df(data):
     df = df.iloc[:, 1:]
 
     # # If a game is chosen  store the event to pass it next page
-    if (not df.empty) and (the_game != "Chose Game"):
+    if (not df.empty) and (the_game != "Chose from the available Games"):
         my_event = df.iloc[0, 1]
         st.session_state.the_event = my_event
         switch_page('games videos')
@@ -69,7 +69,7 @@ def make_df(data):
     return df
 
 # game options to watch from
-my_options = ("Chose Game", "CSKA Moscow Vs Barcelona", "Olympiakos Vs Panathinaikos", "CSKA Moscow Vs Bayern Munich")
+my_options = ("Chose from the available Games", "CSKA Moscow Vs Barcelona", "Olympiakos Vs Panathinaikos", "CSKA Moscow Vs Bayern Munich")
 st.write("\n")
 # make a menu with selectbox
 the_game = st.selectbox("What Game you want to watch Highlights from?", my_options, index=0, key=None,

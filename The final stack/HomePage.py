@@ -1,16 +1,29 @@
 import streamlit as st
 import filepaths
-import pandas as pd
 from streamlit_extras.app_logo import add_logo
+from streamlit_extras.switch_page_button import switch_page
+from all_functions import match_scl, easyOcr_dir, tess_dir
 
+# init the styles of fonts
+homepage = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Homepage 🏠</strong></p>'
+comp = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Chose competition🏆</strong></p>'
+title = '<p style="font-family:Arial Black; color:Chocolate; font-size: 300%; text-align: center;">SPORTS HIGHLIGHT GENERATOR 🏀</p>'
+
+
+
+# Initialization of the event variable
+if "timetags" not in st.session_state:
+    st.session_state['timetags'] = "0"
+
+# Initialization of the event variable
+if "fps" not in st.session_state:
+    st.session_state['fps'] = "0"
 
 #config of the page
 st.set_page_config(page_title="SPORTS HIGHLIGHT GENERATOR🏀🏆", page_icon="🏀", layout="wide",
-                   initial_sidebar_state="auto", menu_items=None)
-
+                   initial_sidebar_state="expanded", menu_items=None)
 # The title
-st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
-
+#st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
 
 # set background wallpaper and subtitle title & sidebar name
 def add_bg_from_url():
@@ -18,7 +31,7 @@ def add_bg_from_url():
         f"""
        <style>
        .stApp {{
-       background-image: url("https://wallpaper.dog/large/968252.jpg");
+       background-image: url("https://abreuadvogados.com/wp-content/uploads/2021/02/Sports-Law-Portugal.jpg");
        background-attachment: fixed;
        background-size: cover
        }}
@@ -27,82 +40,66 @@ def add_bg_from_url():
         unsafe_allow_html=True
     )
     add_logo("https://i0.wp.com/www.esleschool.com/wp-content/uploads/2021/03/sports-1.png?resize=120%2C120&ssl=1")
-
-
+    st.sidebar.markdown("# SPORTS HIGHLIGHT GENERATOR🏀🏆")
+    # set the homepage style
+    st.markdown(title, unsafe_allow_html=True)
+    st.write("\n")
+    st.write("\n")
+    st.write("\n")
+    st.write("\n")
 add_bg_from_url()
 
-st.markdown("# Homepage 🏀")
-st.sidebar.success("Select one of the above pages")
-
+# set the homepage style
+st.markdown(homepage, unsafe_allow_html=True)
+st.write("\n")
+st.write("\n")
+st.write("\n")
+st.write("\n")
 ################################################# CODE STUFF ######################################
 
+# create 3 columns for each competition
+st.markdown(comp,unsafe_allow_html=True)
+st.write("\n")
+st.write("\n")
+col1, col2, col3 = st.columns(3, gap="large")
+
+with col1:
+   eurbut = st.button("Euroleague")
+   #st.image("https://images.eurohoops.net/2019/05/ba5ac474-euroleague_logo-625x375.jpg")
+   st.image("https://www.euroleaguebasketball.net/images/logo-default.png")
+
+with col2:
+   nbabut = st.button("NBA")
+   #st.image("https://andscape.com/wp-content/uploads/2017/06/nbalogo.jpg?w=700")
+   st.image("https://www.edigitalagency.com.au/wp-content/uploads/NBA-logo-png.png")
+
+with col3:
+   grbut = st.button("Greek Basket League")
+   #st.image("https://athlitikoskosmos.gr/wp-content/uploads/2022/10/inbound8215984157073710095.jpg")
+   st.image("https://assets.b365api.com/images/wp/o/eff877d8fa1926f2f8423fa038e38f1a.png")
 
 
+if eurbut:
+    st.markdown("# Loading... Please wait🙂")
+    # 2. get the matching frames with temp img with match_scl()
+    myfps = match_scl(filepaths.f_path, filepaths.im_file, filepaths.ocr_path, filepaths.vin_file, 33.5, 34.5)
+    st.session_state.fps = myfps
+
+    # ocr the frames matching temp with easyOcr
+    ttags, succ_r = easyOcr_dir(filepaths.ocr_path, filepaths.time_pat)  # na ta kanw save kapou ta ttags
+    # store ttags list for frontend
+    st.session_state.timetags = ttags
+
+    st.write("Redirecting to available Euroleague games...")
+    switch_page("game highlights")
+
+elif nbabut:
+    st.sidebar.success("Not yet implemented")
+
+elif grbut:
+    st.sidebar.success("Not yet implemented")
 
 
-
-
-
-
-
-
-
-# #Create 2 tabs
-# tab1, tab2 = st.tabs(["Choose game", "Choose Highlight"])
-#
-# #Tab n1
-# with tab1:
-#
-# # ftiaxno ena koumpi gia na ginetai kati
-#     button1 = st.button("Game Video", key=None, help=None, on_click = None, args=None, kwargs=None, disabled=False)
-#     button2 = st.button("Photo", key=None, help=None, on_click=None, args=None, kwargs=None, disabled=False)
-#     button3 = st.button("Highlight Sheet", key=None, help=None, on_click=None, args=None, kwargs=None, disabled=False)
-#
-# # enallagi features metaksu koumpion
-#     if button1:
-#         st.write('This is the highlight you wanted')
-#         st.video(mylist[7], format="video/mp4", start_time=0)
-#     elif button2:
-#         camera = st.camera_input("Camera", key=None, help=None, on_change=None, args=None, kwargs=None,
-#                                  disabled=False, label_visibility="visible")
-#     elif button3:
-#         df = pd.read_csv(mylist[2])
-#         st.dataframe(df)
-#
-#
-# #testing upload
-#     st.file_uploader("*Upload*", type=None, accept_multiple_files=False, key=None, help=None, on_change=None, args=None,
-#                      kwargs=None, disabled=False, label_visibility="visible")
-#
-# #testing number input
-#     st.number_input("select game", min_value=0, max_value=10, value= 0, step=None, format=None, key=None, help=None,
-#                     on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
-#
-#
-# #Tab n2
-# with tab2:
-#
-#     #st.image("https://wallpaper.dog/large/968252.jpg", caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
-#     with st.form("my_form"):
-#        st.write("Inside the form")
-#        slider_val = st.slider("Form slider")
-#        checkbox_val = st.checkbox("Form checkbox")
-#
-#        # Every form must have a submit button.
-#        submitted = st.form_submit_button("Submit")
-#        if submitted:
-#            st.write("slider", slider_val, "checkbox", checkbox_val)
-#
-#     st.write("Outside the form")
-#
-#
-#     st.video(mylist[7], format="video/mp4", start_time=0)
-#
-#     name = st.text_input('Name')
-#     if not name:
-#         st.warning('Please input a name.')
-#         st.stop()
-#     st.success('Thank you for inputting a name.')
 
 
 

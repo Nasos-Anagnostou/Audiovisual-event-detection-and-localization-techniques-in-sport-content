@@ -14,18 +14,18 @@ fl_vidfps = "E:\\Career files\Degree Thesis\\1. Coding general\\GIT project" \
 
 
 ######################################## THE LAYOUT OF THE PAGE ###########################################
+gamevideos = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Game Videos 📺</strong></p>'
+
 # add the background image
 add_bg_from_url()
-# The title
-st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
-st.markdown("# Game Videos 📺")
+st.markdown(gamevideos, unsafe_allow_html=True)
 st.write("\n")
-# sidebar title
-st.sidebar.markdown("# Game Videos 📺")
+# # sidebar title
+# st.sidebar.markdown("# Game Videos 📺")
 # return to homepage button
-if st.sidebar.button("Return to Homepage🏠"):
+if st.sidebar.button("🏠Return to Homepage"):
     switch_page('homepage')
-elif st.sidebar.button("Chose again Highlight 📸"):
+elif st.sidebar.button("📸Watch another Highlight"):
     switch_page("game highlights")
 
 
@@ -36,9 +36,11 @@ with open(fl_timetag, newline='') as csvfile:
     for row in data:
         my_tags.append(row)
 
-# load fps from file
-with open(fl_vidfps, "r") as file:
-    my_fps = float(file.read())
+# # load fps from file
+# with open(fl_vidfps, "r") as file:
+#     my_fps = float(file.read())
+
+my_fps = st.session_state.fps
 
 # get the stored event from another page
 myevent = st.session_state.the_event
