@@ -187,6 +187,10 @@ def easyOcr_dir():
 # Template matching
 def match_scl(start_minute, end_minute):
 
+    # remove the old temp images
+    for f in os.listdir(filepaths.ocr_path):
+        os.remove(os.path.join(filepaths.ocr_path, f))
+
     #start_minute, end_minute = float(28.5) , float(48.5)
     new_flag = False
 

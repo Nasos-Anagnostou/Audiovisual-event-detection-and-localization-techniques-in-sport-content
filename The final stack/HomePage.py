@@ -12,15 +12,19 @@ title = '<p style="font-family:Arial Black; color:Chocolate; font-size: 300%; te
 
 # Initialization of the event variable
 if "timetags" not in st.session_state:
-    st.session_state['timetags'] = "0"
+    st.session_state['timetags'] = []
 
 # Initialization of the event variable
 if "fps" not in st.session_state:
-    st.session_state['fps'] = "0"
+    st.session_state['fps'] = 25
 
 # Initialization of the event variable
 if "the_event" not in st.session_state:
     st.session_state['the_event'] = "0"
+
+# Initialization of the event variable
+if "the_game" not in st.session_state:
+    st.session_state['the_game'] = 0
 
 ######################################## THE LAYOUT OF THE PAGE ###########################################
 #config of the page
@@ -69,35 +73,38 @@ st.write("\n")
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
-   eurbut = st.button("Euroleague")
-   #st.image("https://images.eurohoops.net/2019/05/ba5ac474-euroleague_logo-625x375.jpg")
-   st.image("https://dd20lazkioz9n.cloudfront.net/wp-content/uploads/2021/06/Euroleague_Logo_Stacked.png")
+    eurbut = st.button("Euroleague")
+    # st.image("https://images.eurohoops.net/2019/05/ba5ac474-euroleague_logo-625x375.jpg")
+    st.image("https://dd20lazkioz9n.cloudfront.net/wp-content/uploads/2021/06/Euroleague_Logo_Stacked.png")
+
+    if eurbut:
+        st.markdown("# Loading... Please wait🙂")
+
+        # get the matching frames with temp img with match_scl()
+        myfps = match_scl(33.5, 34.5)                               # NA DINW THN TEMP IMAGE EDW
+        st.session_state.fps = myfps
+
+        # ocr the frames matching temp with easyOcr
+        ttags, succ_r = easyOcr_dir()  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+        st.session_state.timetags = ttags
+        # switch_page("game highlights")
+
 
 with col2:
    nbabut = st.button("NBA")
    #st.image("https://andscape.com/wp-content/uploads/2017/06/nbalogo.jpg?w=700")
    st.image("https://1000logos.net/wp-content/uploads/2017/04/Logo-NBA.png")
 
+   if nbabut:
+        st.sidebar.success("Not yet implemented")
+
 with col3:
    grbut = st.button("Greek Basket League")
    #st.image("https://athlitikoskosmos.gr/wp-content/uploads/2022/10/inbound8215984157073710095.jpg")
    st.image("https://assets.b365api.com/images/wp/o/eff877d8fa1926f2f8423fa038e38f1a.png")
 
+   if grbut:
+       st.sidebar.success("Not yet implemented")
 
-if eurbut:
-    st.markdown("# Loading... Please wait🙂")
-    # 2. get the matching frames with temp img with match_scl()
-    myfps = match_scl(33.5, 34.5)
-    st.session_state.fps = myfps
-    # ocr the frames matching temp with easyOcr
-    ttags, succ_r = easyOcr_dir()  # na ta kanw save kapou ta ttags
-    # store ttags list for frontend
-    st.session_state.timetags = ttags
 
-    switch_page("game highlights")
 
-elif nbabut:
-    st.sidebar.success("Not yet implemented")
-
-elif grbut:
-    st.sidebar.success("Not yet implemented")
