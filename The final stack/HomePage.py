@@ -81,11 +81,11 @@ with col1:
         st.markdown("# Loading... Please wait🙂")
 
         # get the matching frames with temp img with match_scl()
-        myfps = match_scl(33.5, 34.5)                               # NA DINW THN TEMP IMAGE EDW
+        myfps = match_scl(filepaths.trim_vid_eu, filepaths.cska_barc_vid, filepaths.ocr_eur, filepaths.tmp_eu, 33.5, 34.5)        # NA DINW THN TEMP IMAGE EDW
         st.session_state.fps = myfps
 
         # ocr the frames matching temp with easyOcr
-        ttags, succ_r = easyOcr_dir()  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+        ttags, succ_r = easyOcr_dir(filepaths.ocr_eur)  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
         st.session_state.timetags = ttags
         # switch_page("game highlights")
 

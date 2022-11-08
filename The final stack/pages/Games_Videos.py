@@ -2,6 +2,7 @@ from streamlit_extras.switch_page_button import switch_page
 import streamlit as st
 from all_functions import clip_creator
 from HomePage import add_bg_from_url
+import filepaths
 import csv
 
 
@@ -51,10 +52,8 @@ my_event = st.session_state.the_event
 
 my_tags = st.session_state.timetags
 
-my_game = st.session_state.the_game
-
 # create the Highlight clip if the timetag is correct else display error message
-vid_exist, videoclip = clip_creator(my_event, my_tags, my_fps)
+vid_exist, videoclip = clip_creator(filepaths.trim_vid_eu, my_event, my_tags, my_fps)
 
 if vid_exist:
     st.video(videoclip, format="video/mp4", start_time=0)
@@ -62,11 +61,3 @@ else:
     st.write("We are sorry 😏, the Highlight you want to watch doesnt exist in our database")
 
 
-# if vid_exist and my_game != "Chose from the available Games" and my_event != "0":
-#     st.video(videoclip, format="video/mp4", start_time=0)
-#
-# elif my_game != "Chose from the available Games" and my_event == "0":
-#     st.write("Please choose a Highlight to see first 🙂")
-#
-# else:
-#     st.write("We are sorry 😏, the Highlight you want to watch doesnt exist in our database")

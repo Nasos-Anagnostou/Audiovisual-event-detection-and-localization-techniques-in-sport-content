@@ -43,10 +43,10 @@ with open("out.csv", "w", newline='') as f:
     wr.writerows(ttags)
 
 # 4. Show user the events to choose what event wants to see by selecting event_id, using csv_trial()
-#myttag = csv_editor(filepaths.csv_path)
+myttag = csv_editor(filepaths.csv_path)
 
 # 5. match event_id timetag with ocr timetag and get the specific frame_id to create videoclip
-#clip_creator(myttag, ttags, myfps, filepaths.f_path, filepaths.clip_1)
+clip_creator(myttag, ttags, myfps, filepaths.f_path, filepaths.clip_1)
 
 # stop the timer print time of execution
 print("\nThe time difference is :", timeit.default_timer() - start_time)

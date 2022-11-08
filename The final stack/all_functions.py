@@ -23,8 +23,6 @@ from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 from moviepy.editor import *
 from Obj_Det_AI import detect_custom_object
 
-###################################################### PATHS ################################################
-fpath = filepaths.f_path  # too many calls need small word
 
 ############################################# OCR FUNCTIONS #############################################
 # creating method to sort image files in folder based in frame number low to high
@@ -35,7 +33,7 @@ def numericalSort(value):
     return parts
 
 # tesseract ocr function
-def tess_dir():
+def tess_dir(ocr_path):
 
     # tesseract allocation
     pytesseract.pytesseract.tesseract_cmd = r"E:\programs\tessaract\tesseract.exe"
@@ -49,7 +47,7 @@ def tess_dir():
     failrec = []
 
     # loop for every frame in the dir
-    for filename in sorted(glob.glob(filepaths.ocr_path + '/*.png'), key=numericalSort):
+    for filename in sorted(glob.glob(ocr_path + '/*.png'), key=numericalSort):
 
         # get the filename not the whole path
         ftail = ntpath.split(filename)[1]
@@ -142,7 +140,7 @@ def tess_dir():
     return timetags, success_rate
 
 # easyOcr ocr function
-def easyOcr_dir():
+def easyOcr_dir(ocr_path):
 
     # EasyOcr Reader initialisation
     reader = easyocr.Reader(['en'], gpu=False)
@@ -151,7 +149,7 @@ def easyOcr_dir():
     counter_2 = 0
 
     # loop for every frame in the dir
-    for filename in sorted(glob.glob(filepaths.ocr_path + '/*.png'),key=numericalSort):
+    for filename in sorted(glob.glob(ocr_path + '/*.png'),key=numericalSort):
 
         ftail = ntpath.split(filename)[1]
 
@@ -185,24 +183,24 @@ def easyOcr_dir():
 
 ############################################# OBJECT DETECTION FUNCTIONS ########################################
 # Template matching
-def match_scl(start_minute, end_minute):
+def match_scl(trim_vid, vin_file, ocr_path, tmp_img, start_minute, end_minute):
 
     # remove the old temp images
-    for f in os.listdir(filepaths.ocr_path):
-        os.remove(os.path.join(filepaths.ocr_path, f))
+    for f in os.listdir(ocr_path):
+        os.remove(os.path.join(ocr_path, f))
 
     #start_minute, end_minute = float(28.5) , float(48.5)
     new_flag = False
 
-    if not os.path.exists(fpath) & new_flag:
-        print("\nCreating a clipped video of the '%s' match game video" % filepaths.vin_file[-10: -4])
-        ffmpeg_extract_subclip(filepaths.vin_file, 60 * start_minute, 60 * end_minute, targetname=fpath)
+    if not os.path.exists(trim_vid) & new_flag:
+        print("\nCreating a clipped video of the '%s' match game video" % vin_file[-10: -4])
+        ffmpeg_extract_subclip(vin_file, 60 * start_minute, 60 * end_minute, targetname=trim_vid)
 
     else:
-        print("\nThe file '%s' is already here sir, lets proceed. " % fpath)
+        print("\nThe file '%s' is already here sir, lets proceed. " % trim_vid)
 
     # read first frame from input video
-    cap = cv2.VideoCapture(fpath)
+    cap = cv2.VideoCapture(trim_vid)
 
     # check if video stream is open
     if not cap.isOpened():
@@ -213,7 +211,7 @@ def match_scl(start_minute, end_minute):
     print("\nFrame rate of this video is: ", myfps)
 
     # Template image , edw mporw na valw to output tou automation
-    template = cv2.imread(filepaths.im_file)  # load the template image
+    template = cv2.imread(tmp_img)  # load the template image
     gray_tem = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)  # convert it to grayscale
 
     # loop through every frame read by input
@@ -292,7 +290,7 @@ def match_scl(start_minute, end_minute):
                 # cropping the part we want to ocr
                 crop_img = frame[startY:endY, startX:endX]
                 new_tem = crop_img
-                cv2.imwrite(filepaths.ocr_path + "frame_%d.png" % frameid, crop_img)
+                cv2.imwrite(ocr_path + "frame_%d.png" % frameid, crop_img)
                 # cv2.imshow("cropped", crop_img)
                 # cv2.waitKey(0)
                 print(found, frameid)
@@ -366,7 +364,7 @@ def csv_editor (filename):
 
 ############################################# VIDEO EDITING FUNCTIONS ############################################
 # create the Highlight video clip
-def clip_creator(myttag, ttaglist, myfps):
+def clip_creator(trim_vid, myttag, ttaglist, myfps):
 
     # videolcip init
     videoclip = 0
@@ -380,7 +378,7 @@ def clip_creator(myttag, ttaglist, myfps):
 
             # Clip creation creating subclip with duration [mysec-4, mysec+2]  #vrisko to sec thelo [mysec-6, mysec+2] h [fr_id -(fps* 6), fr_id +(fps* 2)]
             mysec = fr_id / myfps
-            ffmpeg_extract_subclip(fpath, mysec - 5, mysec + 1, targetname=filepaths.clip_1)
+            ffmpeg_extract_subclip(trim_vid, mysec - 5, mysec + 1, targetname=filepaths.clip_1)
             videoclip = filepaths.clip_1
             vflag = True
             break
@@ -391,6 +389,7 @@ def clip_creator(myttag, ttaglist, myfps):
         else:
             continue
 
+    return vflag, videoclip
     # # Play the video clip created
     # cap = cv2.VideoCapture(videoclip_1)
     # fps = int(cap.get(cv2.CAP_PROP_FPS))   # or cap.get(5)
@@ -413,4 +412,3 @@ def clip_creator(myttag, ttaglist, myfps):
     # # close capture
     # cap.release()
     # cv2.destroyAllWindows()
-    return vflag, videoclip

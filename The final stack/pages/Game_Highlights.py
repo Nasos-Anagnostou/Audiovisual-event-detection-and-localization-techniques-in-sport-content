@@ -3,6 +3,7 @@ from streamlit_extras.switch_page_button import switch_page
 import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 from HomePage import add_bg_from_url
+import filepaths
 from all_functions import clip_creator
 
 ####################################################### FILE PATHS ###############################################################
@@ -88,17 +89,17 @@ st.session_state.the_game = game_vid
 # if statement for the games
 if game_vid == "CSKA Moscow Vs Barcelona":
     st.write('This is the ' + game_vid + ' play by play text')
-    df1 = pd.read_csv(csv_1)
+    df1 = pd.read_csv(filepaths.cska_barc_csv)
     make_df(df1)
 
 elif game_vid == "Olympiakos Vs Panathinaikos":
     st.write('This is the ' + game_vid + ' play by play text')
-    df2 = pd.read_csv(csv_2)
+    df2 = pd.read_csv(filepaths.oly_pao_csv)
     make_df(df2)
 
 elif game_vid == "CSKA Moscow Vs Bayern Munich":
     st.write('This is the ' + game_vid + ' play by play text')
-    df3 = pd.read_csv(csv_3)
+    df3 = pd.read_csv(filepaths.cska_bayern_csv)
     make_df(df3)  # gia na steilo to video sto backend
 
 # elif the_game == "Chose Game":
