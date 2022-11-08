@@ -13,6 +13,7 @@ title = '<p style="font-family:Arial Black; color:Chocolate; font-size: 300%; te
 # Initialization of the event variable
 if "timetags" not in st.session_state:
     st.session_state['timetags'] = "0"
+
 # Initialization of the event variable
 if "fps" not in st.session_state:
     st.session_state['fps'] = "0"
@@ -92,7 +93,7 @@ if eurbut:
     ttags, succ_r = easyOcr_dir()  # na ta kanw save kapou ta ttags
     # store ttags list for frontend
     st.session_state.timetags = ttags
-    st.write("Redirecting to available Euroleague games...")
+
     switch_page("game highlights")
 
 elif nbabut:

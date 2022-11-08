@@ -1,14 +1,8 @@
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
-import csv
-import filepaths
 import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 from HomePage import add_bg_from_url
-
-# Initialization of the event variable
-if "the_event" not in st.session_state:
-    st.session_state['the_event'] = "0"
 
 ####################################################### FILE PATHS ###############################################################
 csv_1 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/cska_barc.csv"
