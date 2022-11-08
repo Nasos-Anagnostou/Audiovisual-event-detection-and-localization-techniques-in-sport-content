@@ -6,12 +6,9 @@ import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 from HomePage import add_bg_from_url
 
-
-
 # Initialization of the event variable
 if "the_event" not in st.session_state:
     st.session_state['the_event'] = "0"
-
 
 ####################################################### FILE PATHS ###############################################################
 csv_1 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/cska_barc.csv"
@@ -20,6 +17,10 @@ csv_3 = "E:\Career files\Degree Thesis/2. Dataset/play by play text/cska_bayern.
 
 
 ######################################## THE LAYOUT OF THE PAGE ###########################################
+#config of the page
+st.set_page_config(page_title="SPORTS HIGHLIGHT GENERATOR🏀🏆", page_icon="🏀", layout="wide",
+                   initial_sidebar_state="expanded", menu_items=None)
+
 highlights = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Highlights of the Game 📸️</strong></p>'
 
 # add the background image
@@ -31,6 +32,7 @@ st.markdown(highlights, unsafe_allow_html=True)
 if st.sidebar.button("🏠Return to Homepage"):
     switch_page('homepage')
 
+################################################# CODE STUFF #################################################
 
 # make Dataframes clickable
 def make_df(data):

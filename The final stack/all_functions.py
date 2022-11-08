@@ -1,10 +1,11 @@
 # author: Nasos Anagnostou
 # Diploma Thesis "Semantic event analysis in sports Video using webcast Text"
 # pytesseract and easyOCR engine used to parse timetags for each frame detected
-# latest update 2/11/22
+# latest update 7/11/22
 
 # ALL THE IMPORTS NEEDED
 import os
+import filepaths
 import pytesseract
 import easyocr
 import cv2
@@ -22,14 +23,10 @@ from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 from moviepy.editor import *
 from Obj_Det_AI import detect_custom_object
 
-
+###################################################### PATHS ################################################
+fpath = filepaths.f_path  # too many calls need small word
 
 ############################################# OCR FUNCTIONS #############################################
-# time pattern we want to recognise from scorebox
-time_pat = '((1[012]|0[0-9]|[0-9]):([0-9][0-9]))|(([1-5][0-9]|[0-9])(\.|\,)[0-9])'   # maybe use a whitelist?
-# under minute format
-under_minute_format = '(([1-5][0-9]|[0-9])\.[0-9])'
-
 # creating method to sort image files in folder based in frame number low to high
 numbers = re.compile(r'(\d+)')
 def numericalSort(value):
@@ -38,10 +35,12 @@ def numericalSort(value):
     return parts
 
 # tesseract ocr function
-def tess_dir(dir_path, time_pattern, configure):
+def tess_dir():
 
     # tesseract allocation
     pytesseract.pytesseract.tesseract_cmd = r"E:\programs\tessaract\tesseract.exe"
+    # tesseract configure
+    configure = r'--oem 0 --psm 6'
 
     # initialise vars
     counter_1 = 0
@@ -50,7 +49,7 @@ def tess_dir(dir_path, time_pattern, configure):
     failrec = []
 
     # loop for every frame in the dir
-    for filename in sorted(glob.glob(dir_path + '/*.png'), key=numericalSort):
+    for filename in sorted(glob.glob(filepaths.ocr_path + '/*.png'), key=numericalSort):
 
         # get the filename not the whole path
         ftail = ntpath.split(filename)[1]
@@ -105,7 +104,7 @@ def tess_dir(dir_path, time_pattern, configure):
 
             if not success_flag:
 
-                if re.fullmatch(time_pattern, item):
+                if re.fullmatch(filepaths.time_pat, item):
 
                     # timetag parsing success inform
                     print("This is a match!", item)
@@ -114,7 +113,7 @@ def tess_dir(dir_path, time_pattern, configure):
                     gs[i] = item.replace(',', '.')
 
                     # replace time tags when in under a minute to match play by play format
-                    if re.fullmatch(under_minute_format, gs[i]):
+                    if re.fullmatch(filepaths.under_minute_format, gs[i]):
                         third = gs[i].split('.')[0]
                         gs[i] = "0:" + third
 
@@ -143,7 +142,7 @@ def tess_dir(dir_path, time_pattern, configure):
     return timetags, success_rate
 
 # easyOcr ocr function
-def easyOcr_dir(dir_path, time_pat):
+def easyOcr_dir():
 
     # EasyOcr Reader initialisation
     reader = easyocr.Reader(['en'], gpu=False)
@@ -152,7 +151,7 @@ def easyOcr_dir(dir_path, time_pat):
     counter_2 = 0
 
     # loop for every frame in the dir
-    for filename in sorted(glob.glob(dir_path + '/*.png'),key=numericalSort):
+    for filename in sorted(glob.glob(filepaths.ocr_path + '/*.png'),key=numericalSort):
 
         ftail = ntpath.split(filename)[1]
 
@@ -160,11 +159,11 @@ def easyOcr_dir(dir_path, time_pat):
         print("The frame has this elements: ", ftail, result)
 
         # dirty fix
-        if not re.fullmatch(under_minute_format, result):
+        if not re.fullmatch(filepaths.under_minute_format, result):
             result = result.replace('.', ':')
 
         counter_1 += 1
-        if re.fullmatch(time_pat, result):
+        if re.fullmatch(filepaths.time_pat, result):
             # timetag parsing success inform
             print("This is a match!", result)
 
@@ -186,14 +185,14 @@ def easyOcr_dir(dir_path, time_pat):
 
 ############################################# OBJECT DETECTION FUNCTIONS ########################################
 # Template matching
-def match_scl(fpath, temp_img, tess_path, vinfile, start_minute, end_minute):
+def match_scl(start_minute, end_minute):
 
     #start_minute, end_minute = float(28.5) , float(48.5)
     new_flag = False
 
     if not os.path.exists(fpath) & new_flag:
-        print("\nCreating a clipped video of the '%s' match game video" % vinfile[-10: -4])
-        ffmpeg_extract_subclip(vinfile, 60 * start_minute, 60 * end_minute, targetname=fpath)
+        print("\nCreating a clipped video of the '%s' match game video" % filepaths.vin_file[-10: -4])
+        ffmpeg_extract_subclip(filepaths.vin_file, 60 * start_minute, 60 * end_minute, targetname=fpath)
 
     else:
         print("\nThe file '%s' is already here sir, lets proceed. " % fpath)
@@ -210,7 +209,7 @@ def match_scl(fpath, temp_img, tess_path, vinfile, start_minute, end_minute):
     print("\nFrame rate of this video is: ", myfps)
 
     # Template image , edw mporw na valw to output tou automation
-    template = cv2.imread(temp_img)  # load the template image
+    template = cv2.imread(filepaths.im_file)  # load the template image
     gray_tem = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)  # convert it to grayscale
 
     # loop through every frame read by input
@@ -283,22 +282,16 @@ def match_scl(fpath, temp_img, tess_path, vinfile, start_minute, end_minute):
                 # threshold n2 is higher because we use the boxscore of the same game now
                 threshold = 0.75
 
-                print(found, frameid)
-
                 (startX, startY) = (int(maxLoc[0]), int(maxLoc[1]))
                 (endX, endY) = (int(maxLoc[0] + tW), int(maxLoc[1] + tH))
-
-                # draw a bounding box around the detected result and display the image
-                # cv2.rectangle(img, (startX, startY), (endX, endY), (0, 0, 255), 2)
-                # cv2.imshow("Image", img)
-                # cv2.waitKey(0)
 
                 # cropping the part we want to ocr
                 crop_img = frame[startY:endY, startX:endX]
                 new_tem = crop_img
-                cv2.imwrite(tess_path + "frame_%d.png" % frameid, crop_img)
+                cv2.imwrite(filepaths.ocr_path + "frame_%d.png" % frameid, crop_img)
                 # cv2.imshow("cropped", crop_img)
                 # cv2.waitKey(0)
+                print(found, frameid)
 
     # close capture
     cap.release()
@@ -324,9 +317,8 @@ def match_scl(fpath, temp_img, tess_path, vinfile, start_minute, end_minute):
 
     return myfps
 
-
 ############################################# CSV EDITING FUNCTIONS #############################################
-# csv file editor
+# csv file editor obsolete since the frontend is developed
 def csv_editor (filename):
 
 	# root path of csv files
@@ -370,11 +362,13 @@ def csv_editor (filename):
 
 ############################################# VIDEO EDITING FUNCTIONS ############################################
 # create the Highlight video clip
-def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
+def clip_creator(myttag, ttaglist, myfps):
 
+    # videolcip init
+    videoclip = 0
+    # flag to check if the video created
     vflag = False
     for itime, fid in ttaglist:
-
 
         if myttag in itime:
             fr_id = float(fid)
@@ -382,12 +376,13 @@ def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
 
             # Clip creation creating subclip with duration [mysec-4, mysec+2]  #vrisko to sec thelo [mysec-6, mysec+2] h [fr_id -(fps* 6), fr_id +(fps* 2)]
             mysec = fr_id / myfps
-            ffmpeg_extract_subclip(fpath, mysec - 5, mysec + 1, targetname=videoclip_1)
+            ffmpeg_extract_subclip(fpath, mysec - 5, mysec + 1, targetname=filepaths.clip_1)
+            videoclip = filepaths.clip_1
             vflag = True
             break
 
-        if os.path.exists(videoclip_1):
-            os.remove(videoclip_1)
+        if os.path.exists(filepaths.clip_1):
+            os.remove(filepaths.clip_1)
             print("Deleting the old file")
         else:
             continue
@@ -414,4 +409,4 @@ def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
     # # close capture
     # cap.release()
     # cv2.destroyAllWindows()
-    return vflag
+    return vflag, videoclip
