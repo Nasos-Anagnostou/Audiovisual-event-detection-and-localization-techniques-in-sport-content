@@ -14,9 +14,9 @@ root_path = r"E:\Career files\Degree Thesis\2. Dataset\competition_paths"
 roi_path = root + r"/2. Dataset/Object_Det_files/"  # move to aligner
 
 # 1. select the path extracted frames will be saved
-ocr_eur = root_path + r"/ocr_paths/ocr_eur/"  # dimiourgia neou xorou kathe fora? - move to aligner
-ocr_nba = root_path + r"/ocr_paths/ocr_nba/"
-ocr_gr = root_path + r"/ocr_paths/ocr_gr/"
+ocr_eu1 = root_path + r"/ocr_paths/ocr_eu1/"  # dimiourgia neou xorou kathe fora? - move to aligner
+ocr_eu2 = root_path + r"/ocr_paths/ocr_eu2/"
+ocr_eu3 = root_path + r"/ocr_paths/ocr_eu3/"
 
 # 2. csv files for each competition and each game
 #euroleague
@@ -35,7 +35,10 @@ tmp_nba = root_path + r"/tmp_path/timebox_nba.jpg"
 tmp_gr  = root_path + r"/tmp_path/timebox_gr.jpg"
 
 # 5. trim X minutes from full match video and save it in the chosen dir
-trim_vid_eu  = root_path + r"/trimmed_videos/trim_eu.mp4"
+trim_vid_eu1  = root_path + r"/trimmed_videos/trim_eu1.mp4"
+trim_vid_eu2  = root_path + r"/trimmed_videos/trim_eu2.mp4"
+trim_vid_eu3  = root_path + r"/trimmed_videos/trim_eu3.mp4"
+
 trim_vid_nba = root_path + r"/trimmed_videos/trim_nba.mp4"
 trim_vid_gr  = root_path + r"/trimmed_videos/trim_gr.mp4"
 
