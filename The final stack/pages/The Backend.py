@@ -1,14 +1,14 @@
 import streamlit as st
 import filepaths
-import pandas as pd
-from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
+import os
+import csv
 from streamlit_extras.app_logo import add_logo
 from streamlit_extras.switch_page_button import switch_page
 from all_functions import match_scl, easyOcr_dir, tess_dir
 
 ####################################################### INITIALIZATION ###############################################################
 # init the styles of fonts
-homepage = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Homepage 🏠</strong></p>'
+homepage = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>CREATOR OF HIGHLIGHTS 🏠</strong></p>'
 comp = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Chose competition🏆</strong></p>'
 title = '<p style="font-family:Arial Black; color:Chocolate; font-size: 300%; text-align: center;">SPORTS HIGHLIGHT GENERATOR 🏀</p>'
 
@@ -80,70 +80,75 @@ col1, col2, col3 = st.columns(3, gap="large")
 my_options = ("Choose from the available Games", "CSKA Moscow Vs Barcelona", "Olympiakos Vs Panathinaikos", "CSKA Moscow Vs Bayern Munich")
 
 with col1:
-    eurbut = st.button("Euroleague")
     # st.image("https://images.eurohoops.net/2019/05/ba5ac474-euroleague_logo-625x375.jpg")
     st.image("https://dd20lazkioz9n.cloudfront.net/wp-content/uploads/2021/06/Euroleague_Logo_Stacked.png")
 
-    if eurbut:
-        st.session_state.competition = "Euroleague"
-        st.markdown("# Loading... Please wait🙂")
-        switch_page("game highlights")
+    st.session_state.competition = "Euroleague"
+    # make a menu with selectbox
+    game_vid = st.selectbox("For which Game you want to create the Highlights?", my_options, index=0, key=None,
+                            help=None, on_change=None, args=None, kwargs=None, disabled=False,
+                            label_visibility="visible")
+    # save game_vid value
+    st.session_state.the_game = game_vid
 
-        # make a menu with selectbox
-        game_vid = st.selectbox("What Game you want to watch Highlights from?", my_options, index=0, key=None,
-                                help=None, on_change=None, args=None, kwargs=None, disabled=False,
-                                label_visibility="visible")
-        # save game_vid value
-        st.session_state.the_game = game_vid
+    # if statement for the games
+    if game_vid == "CSKA Moscow Vs Barcelona":
+        st.write("Loading please wait... ⌚")
+        # template matching and store fps
+        myfps = match_scl(filepaths.trim_vid_eu1, filepaths.cska_barc_vid, filepaths.ocr_eu1, filepaths.tmp_eu, 33.5,
+                          34.5)  # NA DINW THN TEMP IMAGE EDW
+        with open("video_fps.txt", "w") as file:
+            file.write(str(myfps))
 
-        # if statement for the games
-        if game_vid == "CSKA Moscow Vs Barcelona":
+        # ocr the frames matching temp with easyOcr
+        ttags, succ_r = easyOcr_dir(
+            filepaths.ocr_eu1)  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+        with open(os.path.join(filepaths.timetags, "eur1.csv"), "w", newline='') as f:
+            wr = csv.writer(f)
+            wr.writerows(ttags)
+        st.write("Thank you for your patience 🙂")
 
-            myfps = match_scl(filepaths.trim_vid_eu, filepaths.cska_barc_vid, filepaths.ocr_eur, filepaths.tmp_eu, 33.5, 34.5)  # NA DINW THN TEMP IMAGE EDW
-            st.session_state.fps = myfps
+    elif game_vid == "Olympiakos Vs Panathinaikos":
+        st.write("Loading please wait... ⌚")
+        # template matching
+        myfps = match_scl(filepaths.trim_vid_eu2, filepaths.oly_pao_csv_vid, filepaths.ocr_eu2, filepaths.tmp_eu, 33.5,
+                          34.5)  # NA DINW THN TEMP IMAGE EDW
+        with open("video_fps.txt", "w") as file:
+            file.write(str(myfps))
 
-            # ocr the frames matching temp with easyOcr
-            ttags, succ_r = easyOcr_dir(filepaths.ocr_eur)  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
-            st.session_state.timetags = ttags
+        # ocr the frames matching temp with easyOcr
+        ttags, succ_r = easyOcr_dir(
+            filepaths.ocr_eu2)  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+        with open(os.path.join(filepaths.timetags, "eur2.csv"), "w", newline='') as f:
+            wr = csv.writer(f)
+            wr.writerows(ttags)
+        st.write("Thank you for your patience 🙂")
 
-        elif game_vid == "Olympiakos Vs Panathinaikos":
+    elif game_vid == "CSKA Moscow Vs Bayern Munich":
+        st.write("Loading please wait... ⌚")
+        # template matching
+        myfps = match_scl(filepaths.trim_vid_eu3, filepaths.cska_bayern_vid, filepaths.ocr_eu3, filepaths.tmp_eu, 33.5,
+                          34.5)  # NA DINW THN TEMP IMAGE EDW
+        with open("video_fps.txt", "w") as file:
+            file.write(str(myfps))
 
-            myfps = match_scl(filepaths.trim_vid_eu, filepaths.cska_barc_vid, filepaths.ocr_eur, filepaths.tmp_eu, 33.5, 34.5)  # NA DINW THN TEMP IMAGE EDW
-            st.session_state.fps = myfps
+        # ocr the frames matching temp with easyOcr
+        ttags, succ_r = easyOcr_dir(
+            filepaths.ocr_eu3)  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+        with open(os.path.join(filepaths.timetags, "eur3.csv"), "w", newline='') as f:
+            wr = csv.writer(f)
+            wr.writerows(ttags)
+        st.write("Thank you for your patience 🙂")
 
-            # ocr the frames matching temp with easyOcr
-            ttags, succ_r = easyOcr_dir(
-                filepaths.ocr_eur)  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
-            st.session_state.timetags = ttags
-
-        elif game_vid == "CSKA Moscow Vs Bayern Munich":
-
-            myfps = match_scl(filepaths.trim_vid_eu, filepaths.cska_barc_vid, filepaths.ocr_eur, filepaths.tmp_eu, 33.5,
-                              34.5)  # NA DINW THN TEMP IMAGE EDW
-            st.session_state.fps = myfps
-
-            # ocr the frames matching temp with easyOcr
-            ttags, succ_r = easyOcr_dir(
-                filepaths.ocr_eur)  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
-            st.session_state.timetags = ttags
 
 with col2:
-   nbabut = st.button("NBA")
    # st.image("https://andscape.com/wp-content/uploads/2017/06/nbalogo.jpg?w=700")
    st.image("https://1000logos.net/wp-content/uploads/2017/04/Logo-NBA.png")
 
-   if nbabut:
-       st.session_state.competition = "Nba"
-       st.sidebar.success("Not yet implemented")
 
 with col3:
-   grbut = st.button("Greek Basket League")
    #st.image("https://athlitikoskosmos.gr/wp-content/uploads/2022/10/inbound8215984157073710095.jpg")
    st.image("https://assets.b365api.com/images/wp/o/eff877d8fa1926f2f8423fa038e38f1a.png")
-
-   if grbut:
-       st.session_state.competition = "Basket League"
-       st.sidebar.success("Not yet implemented")
 
 
 

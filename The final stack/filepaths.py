@@ -13,6 +13,9 @@ root_path = r"E:\Career files\Degree Thesis\2. Dataset\competition_paths"
 # roi path
 roi_path = root + r"/2. Dataset/Object_Det_files/"  # move to aligner
 
+# timetags directory
+timetags = root_path + r"/timetags"
+
 # 1. select the path extracted frames will be saved
 ocr_eu1 = root_path + r"/ocr_paths/ocr_eu1/"  # dimiourgia neou xorou kathe fora? - move to aligner
 ocr_eu2 = root_path + r"/ocr_paths/ocr_eu2/"

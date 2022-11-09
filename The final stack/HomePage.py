@@ -1,10 +1,8 @@
 import streamlit as st
 import filepaths
-import pandas as pd
-from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 from streamlit_extras.app_logo import add_logo
 from streamlit_extras.switch_page_button import switch_page
-from all_functions import match_scl, easyOcr_dir, tess_dir
+
 
 ####################################################### INITIALIZATION ###############################################################
 # init the styles of fonts
@@ -32,13 +30,15 @@ if "the_game" not in st.session_state:
 if "competition" not in st.session_state:
     st.session_state['competition'] = "0"
 
+# Initialization of the event variable
+if "the_vid" not in st.session_state:
+    st.session_state['the_vid'] = "0"
+
 
 ######################################## THE LAYOUT OF THE PAGE ###########################################
 #config of the page
 st.set_page_config(page_title="SPORTS HIGHLIGHT GENERATOR🏀🏆", page_icon="🏀", layout="wide",
                    initial_sidebar_state="expanded", menu_items=None)
-# The title
-#st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
 
 # insert empty spaces
 def empty_line(lines_number):
@@ -88,14 +88,6 @@ with col1:
         st.markdown("# Loading... Please wait🙂")
         switch_page("game highlights")
 
-        # # get the matching frames with temp img with match_scl()
-        # myfps = match_scl(filepaths.trim_vid_eu, filepaths.cska_barc_vid, filepaths.ocr_eur, filepaths.tmp_eu, 33.5, 34.5)        # NA DINW THN TEMP IMAGE EDW
-        # st.session_state.fps = myfps
-        #
-        # # ocr the frames matching temp with easyOcr
-        # ttags, succ_r = easyOcr_dir(filepaths.ocr_eur)  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
-        # st.session_state.timetags = ttags
-
 with col2:
    nbabut = st.button("NBA")
    # st.image("https://andscape.com/wp-content/uploads/2017/06/nbalogo.jpg?w=700")
@@ -113,6 +105,8 @@ with col3:
    if grbut:
        st.session_state.competition = "Basket League"
        st.sidebar.success("Not yet implemented")
+
+
 
 
 ####### ON THE FLY #########
