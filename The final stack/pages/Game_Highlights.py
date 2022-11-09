@@ -152,15 +152,11 @@ with col2:                                              # EPILOGI 2 TA EMFANIZO 
         image2 = Image.open('C://Users//Nasos//Desktop//lower.jpg')
         st.image(image2)
 
-    elif not vid_exist and not st.session_state.fps:
-        st.write("Please select a Highlight on the sheet left 📃")
+    elif not vid_exist and not st.session_state.flag:
+        st.write("Please select a Highlight of the sheet on the left 📃⬅")
 
 
-    elif not vid_exist and st.session_state.fps:
-        st.write("We are sorry 😏, the Highlight you want to watch doesnt exist in our database")
-    # if not vid_exist and my_event == '0':
-    #     st.write("Please select the highlight you want to watch")
-    #
-    # elif not vid_exist and my_event != '0':
-    #     st.write("We are sorry 😏, the Highlight you want to watch doesnt exist in our database")
-    #
+    elif not vid_exist and st.session_state.flag:
+        st.write("We are sorry, the Highlight you want to watch doesnt exist in our database 😏")
+        empty_line(3)
+        st.image("https://qrs.in/frontent/images/noresult.png")
