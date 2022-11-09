@@ -13,23 +13,21 @@ title = '<p style="font-family:Arial Black; color:Chocolate; font-size: 300%; te
 # Initialization of the timetag variable
 if "timetags" not in st.session_state:
     st.session_state['timetags'] = []
-
 # Initialization of the fps variable
 if "fps" not in st.session_state:
     st.session_state['fps'] = 25
-
+# Initialization of the flag variable
+if "flag" not in st.session_state:
+    st.session_state['flag'] = False
 # Initialization of the event variable
 if "the_event" not in st.session_state:
     st.session_state['the_event'] = "0"
-
 # Initialization of the game variable
 if "the_game" not in st.session_state:
     st.session_state['the_game'] = 0
-
 # Initialization of the event variable
 if "competition" not in st.session_state:
     st.session_state['competition'] = "0"
-
 # Initialization of the event variable
 if "the_vid" not in st.session_state:
     st.session_state['the_vid'] = "0"

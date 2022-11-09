@@ -66,10 +66,12 @@ def make_df(data,vid_dir, ttag_dir):
     df = pd.DataFrame(selected)  # Pass the selected rows to a new dataframe df
     df = df.iloc[:, 1:]
 
+    # session flag
+    st.session_state.flag = False
     # # If a game is chosen  store the event to pass it next page !! CLICK !!
     if (not df.empty) and (game_vid != "Chose from the available Games"):
         # get the stored event from another page
-        with open(os.path.join(filepaths.timetags,ttag_dir), newline='') as csvfile:
+        with open(os.path.join(filepaths.timetags, ttag_dir), newline='') as csvfile:
             data = csv.reader(csvfile)
             for row in data:
                 st.session_state.timetags.append(row)
@@ -77,6 +79,7 @@ def make_df(data,vid_dir, ttag_dir):
         st.session_state.the_vid = vid_dir
         st.session_state.the_event = df.iloc[0, 1]
         #switch_page('games videos')                # EPILOGI 1 TON PIGAINO STO VIDEOS
+        st.session_state.flag = True
 
     return df
 
@@ -84,6 +87,7 @@ with col1:
     # title of the page
     st.markdown(highlights, unsafe_allow_html=True)
 
+    # session competition
     my_comp = st.session_state.competition
     # if statement for the games
     if my_comp == "Euroleague":
@@ -92,7 +96,7 @@ with col1:
         game_vid = st.selectbox("What Game you want to watch Highlights from?", euro_games, index=0, key=None,
                                 help=None, on_change=None, args=None, kwargs=None, disabled=False,
                                 label_visibility="visible")
-
+        # session game
         st.session_state.the_game = game_vid
         # if statement for the games
         if game_vid == "CSKA Moscow Vs Barcelona":
@@ -109,6 +113,9 @@ with col1:
             st.write('This is the ' + game_vid + ' play by play text')
             df3 = pd.read_csv(filepaths.cska_bayern_csv)
             make_df(df3, filepaths.trim_vid_eu3, "eur3.csv")  # gia na steilo to video sto backend
+
+        else:
+            st.session_state.flag = False
 
     elif my_comp == "Nba":
         st.write("Load the games of Nba first")
@@ -145,10 +152,12 @@ with col2:                                              # EPILOGI 2 TA EMFANIZO 
         image2 = Image.open('C://Users//Nasos//Desktop//lower.jpg')
         st.image(image2)
 
-    else:
+    elif not vid_exist and not st.session_state.fps:
         st.write("Please select a Highlight on the sheet left 📃")
 
 
+    elif not vid_exist and st.session_state.fps:
+        st.write("We are sorry 😏, the Highlight you want to watch doesnt exist in our database")
     # if not vid_exist and my_event == '0':
     #     st.write("Please select the highlight you want to watch")
     #
