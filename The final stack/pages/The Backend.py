@@ -82,8 +82,11 @@ my_options = ("Choose from the available Games", "CSKA Moscow Vs Barcelona", "Ol
 with col1:
     # st.image("https://images.eurohoops.net/2019/05/ba5ac474-euroleague_logo-625x375.jpg")
     st.image("https://dd20lazkioz9n.cloudfront.net/wp-content/uploads/2021/06/Euroleague_Logo_Stacked.png")
-
+    # session competitions
     st.session_state.competition = "Euroleague"
+    # user give how long the video will be
+    start_min = st.text_input("Enter the starting minute", max_chars=5, placeholder="Starting minute")
+    stop_min = st.text_input("Enter the stopping minute", max_chars=5, placeholder="Stopping minute")
     # make a menu with selectbox
     game_vid = st.selectbox("For which Game you want to create the Highlights?", my_options, index=0, key=None,
                             help=None, on_change=None, args=None, kwargs=None, disabled=False,
@@ -95,8 +98,8 @@ with col1:
     if game_vid == "CSKA Moscow Vs Barcelona":
         st.write("Loading please wait... ⌚")
         # template matching and store fps
-        myfps = match_scl(filepaths.trim_vid_eu1, filepaths.cska_barc_vid, filepaths.ocr_eu1, filepaths.tmp_eu, 33.5,
-                          34.5)  # NA DINW THN TEMP IMAGE EDW
+        myfps = match_scl(filepaths.trim_vid_eu1, filepaths.cska_barc_vid, filepaths.ocr_eu1, filepaths.tmp_eu,
+                          float(start_min),float(stop_min))
         with open("video_fps.txt", "w") as file:
             file.write(str(myfps))
 
