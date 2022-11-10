@@ -24,6 +24,10 @@ grbl_games = ("none")
 gamevideo = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Watch the Video 📺</strong></p>'
 highlights = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Highlights of the Game 📸️</strong></p>'
 err_message = '<p style="font-family:Arial Black; color:coral; font-size: 100%;"><strong>Choose a competition from the HomePage first please 🙂</strong></p>'
+sheet = '<p style="font-family:Arial Black; color:coral; font-size: 150%;"><strong>Please select which Highlight you wish to watch</strong></p>'
+err2_message = '<p style="font-family:Arial Black; color:coral; font-size: 150%;"><strong>We are sorry, the Highlight you want to watch doesnt exist in our database 😏</strong></p>'
+selectgame = '<p style="font-family:Arial Black; color:coral; font-size: 150%;"><strong>Please select a game from the menu on the left first 🙂</strong></p>'
+
 
 #config of the page
 st.set_page_config(page_title="SPORTS HIGHLIGHT GENERATOR🏀🏆", page_icon="🏀", layout="wide",
@@ -135,11 +139,11 @@ with col2:                                              # EPILOGI 2 TA EMFANIZO 
     # title of the page
     st.markdown(gamevideo, unsafe_allow_html=True)
     empty_line(5)
+
     # load the inputs for the video
     my_event = st.session_state.the_event
     my_tags = st.session_state.timetags
     my_vid = st.session_state.the_vid
-    #empty_line(8)
     # create the Highlight clip if the timetag is correct else display error message
     vid_exist, videoclip = clip_creator(my_vid, my_event, my_tags, 25)
     if vid_exist:
@@ -152,11 +156,18 @@ with col2:                                              # EPILOGI 2 TA EMFANIZO 
         image2 = Image.open('C://Users//Nasos//Desktop//lower.jpg')
         st.image(image2)
 
-    elif not vid_exist and not st.session_state.flag:
-        st.write("Please select a Highlight of the sheet on the left 📃⬅")
+    elif not st.session_state.flag and st.session_state.the_game == 'Choose from the available Games':
+        st.markdown(selectgame, unsafe_allow_html=True)
+        st.image("https://cdn1.iconfinder.com/data/icons/arrows-vol-1-4/24/Curved_arrow_5-512.png")
 
+    elif not st.session_state.flag:
+        empty_line(2)
+        st.markdown(sheet, unsafe_allow_html=True)
+        st.image("https://cdn1.iconfinder.com/data/icons/arrows-vol-1-4/24/Curved_arrow_5-512.png")
 
-    elif not vid_exist and st.session_state.flag:
-        st.write("We are sorry, the Highlight you want to watch doesnt exist in our database 😏")
+    elif st.session_state.flag:
+        empty_line(2)
+        st.markdown(err2_message, unsafe_allow_html=True)
         empty_line(3)
         st.image("https://qrs.in/frontent/images/noresult.png")
+

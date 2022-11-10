@@ -7,7 +7,7 @@ from streamlit_extras.switch_page_button import switch_page
 ####################################################### INITIALIZATION ###############################################################
 # init the styles of fonts
 homepage = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Homepage 🏠</strong></p>'
-comp = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Chose competition🏆</strong></p>'
+comp = '<p style="font-family:Arial Black; color:#262730; font-size: 150%;"><strong>Chose competition🏆</strong></p>'
 title = '<p style="font-family:Arial Black; color:Chocolate; font-size: 300%; text-align: center;">SPORTS HIGHLIGHT GENERATOR 🏀</p>'
 
 # Initialization of the timetag variable
@@ -67,7 +67,7 @@ add_bg_from_url()
 
 # set the homepage style
 st.markdown(homepage, unsafe_allow_html=True)
-empty_line(3)
+empty_line(5)
 
 ################################################# CODE STUFF ######################################
 
@@ -76,11 +76,11 @@ st.markdown(comp,unsafe_allow_html=True)
 empty_line(2)
 col1, col2, col3 = st.columns(3, gap="large")
 
+
 with col1:
     eurbut = st.button("Euroleague")
     # st.image("https://images.eurohoops.net/2019/05/ba5ac474-euroleague_logo-625x375.jpg")
     st.image("https://dd20lazkioz9n.cloudfront.net/wp-content/uploads/2021/06/Euroleague_Logo_Stacked.png")
-
     if eurbut:
         st.session_state.competition = "Euroleague"
         st.markdown("# Loading... Please wait🙂")
