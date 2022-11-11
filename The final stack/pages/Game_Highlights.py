@@ -148,12 +148,12 @@ with col2:                                              # EPILOGI 2 TA EMFANIZO 
     vid_exist, videoclip = clip_creator(my_vid, my_event, my_tags, 25)
     if vid_exist:
         # create a nice temple for video
-        image1 = Image.open('C://Users//Nasos//Desktop//upper.jpg')
+        image1 = Image.open('upper.jpg')
         st.image(image1)
 
         st.video(videoclip, format="video/mp4", start_time=0)
 
-        image2 = Image.open('C://Users//Nasos//Desktop//lower.jpg')
+        image2 = Image.open('lower.jpg')
         st.image(image2)
 
     elif not st.session_state.flag and st.session_state.the_game == 'Choose from the available Games':
