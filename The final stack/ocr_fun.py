@@ -12,6 +12,7 @@ import numpy as np
 import glob
 import re
 import ntpath
+import filepaths
 
 
 # tesseract allocation
@@ -172,5 +173,49 @@ def easyOcr_dir(dir_path, time_pat):
 
     return ttags, success_rate
 
+def easyOcr_dir2(dir_path):
 
+    ttags = []
+    counter_1 = 0
+    counter_2 = 0
+
+
+    # loop for every frame in the dir
+    for filename in sorted(glob.glob(dir_path + '/*.png'),key=numericalSort):
+        counter_1 += 1
+        ftail = ntpath.split(filename)[1]
+        print("The frame : ", ftail)
+        # get the results
+        result = reader.readtext(filename)[1][1]
+
+        if re.fullmatch(filepaths.time_pat2, result):
+
+            if not re.fullmatch(under_minute_format, result):
+                result = result.replace('.', ':').replace(',', ':').replace(';', ':')
+
+            print("The frame : " + ftail + " Has this match :" + result)
+            # replace commas with dots to increase ocr accuracy
+            new_res = result.replace(',', '.')
+
+
+            # replace time tags when in under a minute to match play by play format
+            # dirty fix
+            if re.fullmatch(filepaths.under_minute_format, new_res):
+                third = new_res.split('.')[0]
+                new_res = "0:" + third
+
+            z = re.findall('([0-9]+)', ftail)[0]
+            ttags.append([new_res, z])
+            counter_2 += 1
+
+
+    # calculating the succes_rate for all frames OCRed
+    success_rate = (counter_2 / counter_1) * 100
+
+    # Printing stuff related to ocr success
+    print("\nYou found {} out of {} images successfully.".format(counter_2, counter_1))
+    print("\n Success rate of:", success_rate, "%")
+    print("\n Timetags exported are: ", ttags)
+
+    return ttags, success_rate
 

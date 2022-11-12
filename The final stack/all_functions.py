@@ -158,7 +158,9 @@ def easyOcr_dir(ocr_path):
 
         # dirty fix
         if not re.fullmatch(filepaths.under_minute_format, result):
+            result = result.replace(',', '.')
             result = result.replace('.', ':')
+
 
         counter_1 += 1
         if re.fullmatch(filepaths.time_pat, result):
