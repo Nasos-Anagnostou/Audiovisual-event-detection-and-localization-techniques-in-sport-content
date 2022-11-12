@@ -174,40 +174,47 @@ def easyOcr_dir(dir_path, time_pat):
     return ttags, success_rate
 
 def easyOcr_dir2(dir_path):
-
     ttags = []
+    failrec = []
     counter_1 = 0
     counter_2 = 0
-
 
     # loop for every frame in the dir
     for filename in sorted(glob.glob(dir_path + '/*.png'),key=numericalSort):
         counter_1 += 1
         ftail = ntpath.split(filename)[1]
-        print("The frame : ", ftail)
         # get the results
-        result = reader.readtext(filename)[1][1]
+        result = reader.readtext(filename)[1]
+        print("The frame has these elements: ", ftail, result)
+        result = result[1]
 
         if re.fullmatch(filepaths.time_pat2, result):
 
+            # dirty fix
             if not re.fullmatch(under_minute_format, result):
                 result = result.replace('.', ':').replace(',', ':').replace(';', ':')
 
-            print("The frame : " + ftail + " Has this match :" + result)
+            print("Has this match: ", result)
             # replace commas with dots to increase ocr accuracy
-            new_res = result.replace(',', '.')
-
+            result = result.replace(',', '.')
 
             # replace time tags when in under a minute to match play by play format
-            # dirty fix
-            if re.fullmatch(filepaths.under_minute_format, new_res):
-                third = new_res.split('.')[0]
-                new_res = "0:" + third
+            if re.fullmatch(filepaths.under_minute_format, result):
+                third = result.split('.')[0]
+                if len(third) == 2:
+                    result = "0:" + third
+                else:
+                    result = "0:0" + third
 
+            print("Its a match: ", result)
+            # getting frame_id
             z = re.findall('([0-9]+)', ftail)[0]
-            ttags.append([new_res, z])
+            # creating a list with timetag ocred + frame that was found on
+            ttags.append([result, z])
             counter_2 += 1
 
+        else:
+            failrec.append(ftail)
 
     # calculating the succes_rate for all frames OCRed
     success_rate = (counter_2 / counter_1) * 100
@@ -215,6 +222,7 @@ def easyOcr_dir2(dir_path):
     # Printing stuff related to ocr success
     print("\nYou found {} out of {} images successfully.".format(counter_2, counter_1))
     print("\n Success rate of:", success_rate, "%")
+    print("\n These images failed :", failrec)
     print("\n Timetags exported are: ", ttags)
 
     return ttags, success_rate

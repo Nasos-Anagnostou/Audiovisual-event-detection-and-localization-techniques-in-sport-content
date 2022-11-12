@@ -20,7 +20,7 @@ start_time = timeit.default_timer()
 #ocr_path, roi_path, csv_path, vinfile, imfile, trimfile, videoclip_1, fpath = file_paths()
 
 # 2. get the matching frames with temp img with match_scl()
-#myfps = match_scl(filepaths.trim_vid_eu1, filepaths.cska_barc_vid, filepaths.ocr_eu1, filepaths.tmp_eu, 1, 35)
+myfps = match_scl(filepaths.trim_vid_eu1, filepaths.cska_barc_vid, filepaths.ocr_eu1, filepaths.tmp_eu, 0, 30)
 # store fps for later use
 # with open("video_fps.txt","w") as file:
 #     file.write(str(myfps))
@@ -36,8 +36,7 @@ time_pat = '((1[012]|0[0-9]|[0-9]):([0-9][0-9]))|(([1-5][0-9]|[0-9])(\.|\,)[0-9]
 #ttags, succ_r = tess_dir(filepaths.ocr_eu1)
 
 #easyOcr
-#ttags, succ_r = easyOcr_dir(filepaths.ocr_eu1)    # TA TTAGS GIA KATHE MATCH ALLO FAKELO
-ttags, succ_r = easyOcr_dir2(filepaths.ocr_eu1)    # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+ttags, succ_r = easyOcr_dir(filepaths.ocr_eu1)    # TA TTAGS GIA KATHE MATCH ALLO FAKELO
 
 # # store ttags list for frontend
 # with open("out.csv", "w", newline='') as f:

@@ -5,7 +5,7 @@
 # ocr needed time pattern and under minute format
 time_pat = '((1[012]|0[0-9]|[0-9]):([0-9][0-9]))|(([1-5][0-9]|[0-9])(\.|\,)[0-9])'
 time_pat2 = '((1[012]|0[0-9]|[0-9])(\.|\,|\;|\:)([0-9][0-9]))|(([1-5][0-9]|[0-9])(\.|\,)[0-9])'
-under_minute_format = '(([1-5][0-9]|[0-9])\.[0-9])'
+under_minute_format = '(([1-5][0-9]|[0-9])(\.|\,)[0-9])'
 
 # working directory root_path
 root = r"E:\Career files\Degree Thesis"  # move to aligner
