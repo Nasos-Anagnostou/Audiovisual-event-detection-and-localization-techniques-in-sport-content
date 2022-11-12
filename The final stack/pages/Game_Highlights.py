@@ -73,7 +73,8 @@ def make_df(data,vid_dir, ttag_dir):
     # session flag
     st.session_state.flag = False
     # # If a game is chosen  store the event to pass it next page !! CLICK !!
-    if (not df.empty) and (game_vid != "Chose from the available Games"):
+    if (not df.empty) and (game_vid != "Choose from the available Games"):
+
         # get the stored event from another page
         with open(os.path.join(filepaths.timetags, ttag_dir), newline='') as csvfile:
             data = csv.reader(csvfile)

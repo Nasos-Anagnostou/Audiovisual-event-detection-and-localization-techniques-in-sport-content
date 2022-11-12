@@ -176,6 +176,7 @@ def easyOcr_dir(dir_path, time_pat):
 def easyOcr_dir2(dir_path):
     ttags = []
     failrec = []
+    quarter = []
     counter_1 = 0
     counter_2 = 0
 
@@ -209,23 +210,27 @@ def easyOcr_dir2(dir_path):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ALL THIS IS THE PREPROCESSING PIPELINE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         # read the ocr items and check if the list is empty
-        result = reader.readtext(big_img)
+        result = reader.readtext(thr_img)
         if not result:
             continue
+
+        quarter.append(result[0][1])
+        print(result[0][1])
+
         result = result[1][1]
         print("The frame has these elements: ", ftail, result)
 
         if re.fullmatch(filepaths.time_pat2, result):
 
-            # dirty fix
-            if not re.fullmatch(under_minute_format, result):
-                result = result.replace('.', ':').replace(',', ':').replace(';', ':')
-
             # replace commas with dots to increase ocr accuracy
             result = result.replace(',', '.')
 
-            # replace time tags when in under a minute to match play by play format
-            if re.fullmatch(filepaths.under_minute_format, result):
+            # dirty fix
+            if not re.fullmatch(filepaths.under_minute_format, result):
+                result = result.replace('.', ':').replace(';', ':')
+
+            else:
+                # replace time tags when in under a minute to match play by play format
                 third = result.split('.')[0]
                 if len(third) == 2:
                     result = "0:" + third
@@ -250,6 +255,7 @@ def easyOcr_dir2(dir_path):
     print("\n Success rate of:", success_rate, "%")
     print("\n These images failed :", failrec)
     print("\n Timetags exported are: ", ttags)
+    print("\n The quarters are: ", quarter)
 
     return ttags, success_rate
 

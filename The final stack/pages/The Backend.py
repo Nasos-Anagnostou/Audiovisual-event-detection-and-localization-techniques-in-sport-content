@@ -84,9 +84,11 @@ with col1:
     st.image("https://dd20lazkioz9n.cloudfront.net/wp-content/uploads/2021/06/Euroleague_Logo_Stacked.png")
     # session competitions
     st.session_state.competition = "Euroleague"
+
     # user give how long the video will be
     start_min = st.text_input("Enter the starting minute", max_chars=5, placeholder="Starting minute")
     stop_min = st.text_input("Enter the stopping minute", max_chars=5, placeholder="Stopping minute")
+
     # make a menu with selectbox
     game_vid = st.selectbox("For which Game you want to create the Highlights?", my_options, index=0, key=None,
                             help=None, on_change=None, args=None, kwargs=None, disabled=False,
@@ -104,8 +106,7 @@ with col1:
             file.write(str(myfps))
 
         # ocr the frames matching temp with easyOcr
-        ttags, succ_r = easyOcr_dir(
-            filepaths.ocr_eu1)  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+        ttags, succ_r = easyOcr_dir(filepaths.ocr_eu1)  # na ta kanw save kapou ta ttags
         with open(os.path.join(filepaths.timetags, "eur1.csv"), "w", newline='') as f:
             wr = csv.writer(f)
             wr.writerows(ttags)
@@ -120,8 +121,7 @@ with col1:
             file.write(str(myfps))
 
         # ocr the frames matching temp with easyOcr
-        ttags, succ_r = easyOcr_dir(
-            filepaths.ocr_eu2)  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+        ttags, succ_r = easyOcr_dir(filepaths.ocr_eu2)  # na ta kanw save kapou ta ttags
         with open(os.path.join(filepaths.timetags, "eur2.csv"), "w", newline='') as f:
             wr = csv.writer(f)
             wr.writerows(ttags)
@@ -136,8 +136,7 @@ with col1:
             file.write(str(myfps))
 
         # ocr the frames matching temp with easyOcr
-        ttags, succ_r = easyOcr_dir(
-            filepaths.ocr_eu3)  # na ta kanw save kapou ta ttags         # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+        ttags, succ_r = easyOcr_dir(filepaths.ocr_eu3)  # na ta kanw save kapou ta ttags
         with open(os.path.join(filepaths.timetags, "eur3.csv"), "w", newline='') as f:
             wr = csv.writer(f)
             wr.writerows(ttags)
