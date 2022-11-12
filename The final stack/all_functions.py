@@ -141,7 +141,6 @@ def tess_dir(ocr_path):
 
 # easyOcr ocr function
 def easyOcr_dir(ocr_path):
-
     # EasyOcr Reader initialisation
     reader = easyocr.Reader(['en'], gpu=False)
 
@@ -154,11 +153,37 @@ def easyOcr_dir(ocr_path):
     for filename in sorted(glob.glob(ocr_path + '/*.png'), key=numericalSort):
         counter_1 += 1
         ftail = ntpath.split(filename)[1]
-        # get the results
-        result = reader.readtext(filename)[1]
-        print("The frame has these elements: ", ftail, result)
-        result = result[1]
 
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ALL THIS IS THE PREPROCESSING PIPELINE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        im_cv2 = cv2.imread(filename)
+        pim = Image.fromarray(im_cv2)
+
+        # 1. enhance image sharpness given a specific factor
+        enhancer = ImageEnhance.Sharpness(pim)
+        factor_sharp = 2
+        pim_en = enhancer.enhance(factor_sharp)
+        # CV input from PIL and Convert RGB to BGR
+        img_pim = np.array(pim_en)
+        img_pim = img_pim[:, :, ::-1].copy()
+
+        # 3. Convert to Gray
+        grimg = cv2.cvtColor(img_pim, cv2.COLOR_BGR2GRAY)
+
+        # 3. thresholding image chose binary thresholding since it gives the best results( analusi kata to grapsimo )
+        ret, thr_img = cv2.threshold(grimg, 120, 255, cv2.THRESH_BINARY)
+        # 4. resize image x1.5 its original size
+        (origW, origH) = pim.size
+        big_img = cv2.resize(thr_img, (int(1.5 * origW), int(1.5 * origH)), interpolation=cv2.INTER_LINEAR)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ALL THIS IS THE PREPROCESSING PIPELINE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        # read the ocr items and check if the list is empty
+        result = reader.readtext(big_img)
+        if not result:
+            continue
+        result = result[1][1]
+        print("The frame has these elements: ", ftail, result)
+
+        # get the results
         if re.fullmatch(filepaths.time_pat2, result):
 
             # dirty fix
