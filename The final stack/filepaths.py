@@ -30,8 +30,8 @@ cska_bayern_csv = root_path + r"/csv_paths/csv_eur/cska_bayern.csv"
 
 # 3. input template and full game video file
 cska_barc_vid = root_path + r"/game_vid/CSKA_BARCA.mp4"
-oly_pao_csv_vid = root_path + r"/game_vid/Cska Moscow vs Bayern Munich Full Game Euroleague Round 23"
-cska_bayern_vid = root_path + r"/game_vid/Olympiacos Piraeus vs Panathinaikos OPAP Athens Full Game Euroleague Round 24"
+cska_bayern_vid = root_path + r"/game_vid/Cska Moscow vs Bayern Munich Full Game Euroleague Round 23.mp4"
+oly_pao_vid = root_path + r"/game_vid/Olympiacos Piraeus vs Panathinaikos OPAP Athens Full Game Euroleague Round 24.mp4"
 
 # 4. image template for each competition
 tmp_eu  = root_path + r"/tmp_path/timebox_eu.jpg"
@@ -39,9 +39,10 @@ tmp_nba = root_path + r"/tmp_path/timebox_nba.jpg"
 tmp_gr  = root_path + r"/tmp_path/timebox_gr.jpg"
 
 # 5. trim X minutes from full match video and save it in the chosen dir
-trim_vid_eu1  = root_path + r"/trimmed_videos/trim_eu1.mp4"
-trim_vid_eu2  = root_path + r"/trimmed_videos/trim_eu2.mp4"
-trim_vid_eu3  = root_path + r"/trimmed_videos/trim_eu3.mp4"
+trim_vid_eu  = root_path + r"/trimmed_videos/"
+trim_vid_eu1  = root_path + r"/trimmed_videos/" + cska_barc_vid[68: -4] +'_trimmed.mp4'
+trim_vid_eu2  = root_path + r"/trimmed_videos/" + oly_pao_vid[68: -4] +'_trimmed.mp4'
+trim_vid_eu3  = root_path + r"/trimmed_videos/" + cska_bayern_vid[68: -4] +'_trimmed.mp4'
 
 trim_vid_nba = root_path + r"/trimmed_videos/trim_nba.mp4"
 trim_vid_gr  = root_path + r"/trimmed_videos/trim_gr.mp4"

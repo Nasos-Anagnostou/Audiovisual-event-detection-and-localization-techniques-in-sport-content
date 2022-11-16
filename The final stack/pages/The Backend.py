@@ -86,8 +86,8 @@ with col1:
     st.session_state.competition = "Euroleague"
 
     # user give how long the video will be
-    start_min = st.text_input("Enter the starting minute", max_chars=5, placeholder="Starting minute")
-    stop_min = st.text_input("Enter the stopping minute", max_chars=5, placeholder="Stopping minute")
+    start_min = st.text_input("Enter the starting minute or 'start' for the whole video", max_chars=5, placeholder="Starting minute")
+    stop_min = st.text_input("Enter the stopping minute or 'end' for the whole video", max_chars=5, placeholder="Stopping minute")
 
     # make a menu with selectbox
     game_vid = st.selectbox("For which Game you want to create the Highlights?", my_options, index=0, key=None,
@@ -100,8 +100,7 @@ with col1:
     if game_vid == "CSKA Moscow Vs Barcelona":
         st.write("Loading please wait... ⌚")
         # template matching and store fps
-        myfps = match_scl(filepaths.trim_vid_eu1, filepaths.cska_barc_vid, filepaths.ocr_eu1, filepaths.tmp_eu,
-                          float(start_min),float(stop_min))
+        myfps = match_scl(filepaths.cska_barc_vid, filepaths.ocr_eu1, filepaths.tmp_eu,float(start_min),float(stop_min))
         with open("video_fps.txt", "w") as file:
             file.write(str(myfps))
 
@@ -115,8 +114,7 @@ with col1:
     elif game_vid == "Olympiakos Vs Panathinaikos":
         st.write("Loading please wait... ⌚")
         # template matching
-        myfps = match_scl(filepaths.trim_vid_eu2, filepaths.oly_pao_csv_vid, filepaths.ocr_eu2, filepaths.tmp_eu, 33.5,
-                          34.5)  # NA DINW THN TEMP IMAGE EDW
+        myfps = match_scl( filepaths.oly_pao_csv_vid, filepaths.ocr_eu2, filepaths.tmp_eu, 33.5, 34.5)
         with open("video_fps.txt", "w") as file:
             file.write(str(myfps))
 
@@ -130,8 +128,7 @@ with col1:
     elif game_vid == "CSKA Moscow Vs Bayern Munich":
         st.write("Loading please wait... ⌚")
         # template matching
-        myfps = match_scl(filepaths.trim_vid_eu3, filepaths.cska_bayern_vid, filepaths.ocr_eu3, filepaths.tmp_eu, 33.5,
-                          34.5)  # NA DINW THN TEMP IMAGE EDW
+        myfps = match_scl(filepaths.cska_bayern_vid, filepaths.ocr_eu3, filepaths.tmp_eu, 33.5, 34.5)
         with open("video_fps.txt", "w") as file:
             file.write(str(myfps))
 

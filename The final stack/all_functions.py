@@ -21,6 +21,7 @@ from PIL import Image, ImageEnhance
 from pandasgui import show
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 from moviepy.editor import *
+import requests
 from Obj_Det_AI import detect_custom_object
 
 
@@ -241,26 +242,24 @@ def easyOcr_dir(ocr_path):
 
 ############################################# OBJECT DETECTION FUNCTIONS ########################################
 # Template matching
-def match_scl(trim_vid, vin_file, ocr_path, tmp_img, start_minute, end_minute):
+def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
 
     # remove the old temp images
     for f in os.listdir(ocr_path):
         os.remove(os.path.join(ocr_path, f))
 
-    new_flag = False
-    if not os.path.exists(trim_vid) & new_flag:
 
-        # read first frame from input video
-        if start_minute == 'start' and end_minute == 'end':
-            print("Get the whole video of '%s' game" % vin_file[-15: -4])
-            cap = cv2.VideoCapture(vin_file)
-        else:
-            print("\nCreating a clipped video of the '%s' match game video" % vin_file[-10: -4])
-            ffmpeg_extract_subclip(vin_file, 60 * start_minute, 60 * end_minute, targetname=trim_vid)
-            cap = cv2.VideoCapture(trim_vid)
+    if start_minute == 'start' and end_minute == 'end':
+        print("Get the whole video of '%s' game" % vin_file[-15: -4])
+        cap = cv2.VideoCapture(vin_file)
 
     else:
-        print("\nThe file '%s' is already here sir, lets proceed. " % trim_vid)
+        print("\nCreating a clipped video of the '%s' game" % vin_file[68: -4])
+        trim_vid = filepaths.trim_vid_eu + vin_file[68: -4] + '_trimmed.mp4'
+
+        ffmpeg_extract_subclip(vin_file, 60 * start_minute, 60 * end_minute, targetname=trim_vid)
+        cap = cv2.VideoCapture(trim_vid)
+
 
 
     # check if video stream is open
@@ -474,3 +473,37 @@ def clip_creator(trim_vid, myttag, ttaglist, myfps):
     # # close capture
     # cap.release()
     # cv2.destroyAllWindows()
+
+
+def eur_scrapper(game_name):
+    ######################### seasoncode=? kai gamecode=? apo to site ths euroleague
+    #game_name = 'game1.csv'
+    url = "https://live.euroleague.net/api/PlaybyPlay?gamecode=40&seasoncode=E2022"
+    r = requests.get(url)
+    print(r.status_code)  # if all goes well this must return 200
+    data = r.json()
+
+    ############### AUTO GIA OLA TA QUARTERS
+    # 1ST QUARTER
+    df1Q = pd.DataFrame.from_dict(pd.json_normalize(data['FirstQuarter']), orient='columns')
+    df1Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
+    df1Q.insert(loc=0, column='Quarter', value='1st Quarter')
+
+    # 2ND QUARTER
+    df2Q = pd.DataFrame.from_dict(pd.json_normalize(data['SecondQuarter']), orient='columns')
+    df2Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
+    df2Q.insert(loc=0, column='Quarter', value='2nd Quarter')
+
+    # 3RD QUARTER
+    df3Q = pd.DataFrame.from_dict(pd.json_normalize(data['ThirdQuarter']), orient='columns')
+    df3Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
+    df3Q.insert(loc=0, column='Quarter', value='3nd Quarter')
+
+    # 4TH QUARTER
+    df4Q = pd.DataFrame.from_dict(pd.json_normalize(data['ForthQuarter']), orient='columns')
+    df4Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
+    df4Q.insert(loc=0, column='Quarter', value='4th Quarter')
+
+    frames = (df1Q, df2Q, df3Q, df4Q)
+    result = pd.concat(frames)
+    result.to_csv(os.path.join(r"E:\Career files\Degree Thesis\2. Dataset\competition_paths\csv_paths\csv_eur", game_name))

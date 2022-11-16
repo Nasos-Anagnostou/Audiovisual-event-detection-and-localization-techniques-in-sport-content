@@ -152,8 +152,6 @@ with col1:
     else:
         empty_line(3)
         st.markdown(err_message, unsafe_allow_html=True)
-        if st.button("🏠Homepage"):
-            switch_page('homepage')
         empty_line(2)
         st.image("https://qrs.in/frontent/images/noresult.png")
 
@@ -167,8 +165,10 @@ with col2:                                              # EPILOGI 2 TA EMFANIZO 
     my_event = st.session_state.the_event
     my_tags = st.session_state.timetags
     my_vid = st.session_state.the_vid
+
     # create the Highlight clip if the timetag is correct else display error message
     vid_exist, videoclip = clip_creator(my_vid, my_event, my_tags, 25)
+
     if vid_exist:
         # create a nice temple for video
         image1 = Image.open('upper.jpg')
