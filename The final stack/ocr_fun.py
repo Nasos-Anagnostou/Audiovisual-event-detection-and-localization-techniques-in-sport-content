@@ -176,9 +176,9 @@ def easyOcr_dir(dir_path, time_pat):
 def easyOcr_dir2(dir_path):
     ttags = []
     failrec = []
-    quarter = []
     counter_1 = 0
     counter_2 = 0
+
 
     # loop for every frame in the dir
     for filename in sorted(glob.glob(dir_path + '/*.png'),key=numericalSort):
@@ -210,17 +210,28 @@ def easyOcr_dir2(dir_path):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ALL THIS IS THE PREPROCESSING PIPELINE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         # read the ocr items and check if the list is empty
-        result = reader.readtext(thr_img)
+        result = reader.readtext(big_img)
         if not result:
             continue
 
-        quarter.append(result[0][1])
-        print(result[0][1])
-
+        quarter = result[0][1]
         result = result[1][1]
-        print("The frame has these elements: ", ftail, result)
+        print("The frame has these elements: ", ftail, result, quarter)
 
         if re.fullmatch(filepaths.time_pat2, result):
+
+
+            if re.fullmatch('(\S*((1)|(1s|S|5))\S*)', quarter):
+                quarter = "1st Quarter"
+
+            elif re.fullmatch('(\S*(2|Z)\S*)|(\S*(ND)\S*)', quarter):
+                quarter = "2nd Quarter"
+
+            elif re.fullmatch('(\S*((J|J|3)|(RD|rd))\S*)', quarter):
+                quarter = "3rd Quarter"
+
+            elif re.fullmatch('(\S*((4TH|4|TH)|(AT|At))\S*)', quarter):
+                quarter = "4th Quarter"
 
             # replace commas with dots to increase ocr accuracy
             result = result.replace(',', '.')
@@ -237,17 +248,17 @@ def easyOcr_dir2(dir_path):
                 else:
                     result = "0:0" + third
 
-            print("Its a match: ", result)
+            print("Its a match: ", result, quarter)
             # getting frame_id
             z = re.findall('([0-9]+)', ftail)[0]
             # creating a list with timetag ocred + frame that was found on
-            ttags.append([result, z])
+            ttags.append([result, quarter, z])
             counter_2 += 1
 
         else:
             failrec.append(ftail)
 
-    # calculating the succes_rate for all frames OCRed
+    # calculating the success_rate for all frames OCRed
     success_rate = (counter_2 / counter_1) * 100
 
     # Printing stuff related to ocr success
@@ -255,7 +266,6 @@ def easyOcr_dir2(dir_path):
     print("\n Success rate of:", success_rate, "%")
     print("\n These images failed :", failrec)
     print("\n Timetags exported are: ", ttags)
-    print("\n The quarters are: ", quarter)
 
     return ttags, success_rate
 

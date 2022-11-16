@@ -2,45 +2,60 @@
 # Diploma Thesis "Semantic event analysis in sports Video using webcast Text"
 #creating a videoclip of the event the user chose to see
 
-
+import os
+import filepaths
 import cv2
 import time
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 
-def clip_creator(myttag, ttaglist, myfps, fpath, videoclip_1):
+def clip_creator(trim_vid, myttag, ttaglist, myfps):
+    if os.path.exists(filepaths.clip_1):
+        os.remove(filepaths.clip_1)
+        print("Deleting the old file")
 
-    for itime, fid in ttaglist:
+    # videolcip init
+    videoclip = 0
+    # flag to check if the video created
+    vflag = False
+    for item in ttaglist:
 
-        if myttag in itime:
-
-            fr_id = float(fid)
-            print("\nFound timestamp: {0} in frame_id: {1}".format(itime, fr_id))
+        if myttag[0] in item[0] and myttag[1] in item[1]:
+            fr_id = float(item[2])
+            print("\nFound timestamp: {0} in frame_id: {1}".format(item[0], fr_id))
 
             # Clip creation creating subclip with duration [mysec-4, mysec+2]  #vrisko to sec thelo [mysec-6, mysec+2] h [fr_id -(fps* 6), fr_id +(fps* 2)]
             mysec = fr_id / myfps
-            ffmpeg_extract_subclip(fpath, mysec - 3, mysec + 1, targetname=videoclip_1)
+            ffmpeg_extract_subclip(trim_vid, mysec - 4, mysec + 1, targetname=filepaths.clip_1)
+            videoclip = filepaths.clip_1
+            vflag = True
             break
 
-    # Play the video clip created
-    cap = cv2.VideoCapture(videoclip_1)
-    fps = int(cap.get(cv2.CAP_PROP_FPS))   # or cap.get(5)
+        elif myttag[0] in item[0] and myttag[1] not in item[2]:
+            print("\nWe dont have the quarter")
 
-    if not cap.isOpened():
-        print("Error File Not Found")
 
-    # setting playback for video clip created
-    while cap.isOpened():
-        ret,frame= cap.read()
 
-        if ret:
-            time.sleep(1/fps)
-            cv2.imshow('frame', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-        else:
-            break
-
-    # close capture
-    cap.release()
-    cv2.destroyAllWindows()
+    return vflag, videoclip
+    # # Play the video clip created
+    # cap = cv2.VideoCapture(videoclip_1)
+    # fps = int(cap.get(cv2.CAP_PROP_FPS))   # or cap.get(5)
+    #
+    # if not cap.isOpened():
+    #     print("Error File Not Found")
+    #
+    # # setting playback for video clip created
+    # while cap.isOpened():
+    #     ret,frame= cap.read()
+    #
+    #     if ret:
+    #         time.sleep(1/fps)
+    #         cv2.imshow('frame', frame)
+    #         if cv2.waitKey(1) & 0xFF == ord('q'):
+    #             break
+    #     else:
+    #         break
+    #
+    # # close capture
+    # cap.release()
+    # cv2.destroyAllWindows()

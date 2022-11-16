@@ -5,6 +5,7 @@ import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 from HomePage import add_bg_from_url, empty_line
 import filepaths
+#from event_clip import clip_creator
 from all_functions import clip_creator
 import csv
 from PIL import Image
@@ -20,13 +21,32 @@ nba_games = ("none")
 # basket league games
 grbl_games = ("none")
 
+
+# Initialization of the game video variable
+if "the_vid" not in st.session_state:
+    st.session_state['the_vid'] = "0"
+# Initialization of the competition variable
+if "competition" not in st.session_state:
+    st.session_state['competition'] = "0"
+# Initialization of the event variable
+if "the_event" not in st.session_state:
+    st.session_state['the_event'] = "0"
+# Initialization of the timetag variable
+if "timetags" not in st.session_state:
+    st.session_state['timetags'] = []
+# Initialization of the flag variable
+if "flag" not in st.session_state:
+    st.session_state['flag'] = False
+# Initialization of the game variable
+if "the_game" not in st.session_state:
+    st.session_state['the_game'] = 0
 ######################################## THE LAYOUT OF THE PAGE ###########################################
 gamevideo = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Watch the Video 📺</strong></p>'
 highlights = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Highlights of the Game 📸️</strong></p>'
-err_message = '<p style="font-family:Arial Black; color:coral; font-size: 100%;"><strong>Choose a competition from the HomePage first please 🙂</strong></p>'
-sheet = '<p style="font-family:Arial Black; color:coral; font-size: 150%;"><strong>Please select which Highlight you wish to watch</strong></p>'
-err2_message = '<p style="font-family:Arial Black; color:coral; font-size: 150%;"><strong>We are sorry, the Highlight you want to watch doesnt exist in our database 😏</strong></p>'
-selectgame = '<p style="font-family:Arial Black; color:coral; font-size: 150%;"><strong>Please select a game from the menu on the left first 🙂</strong></p>'
+err_message = '<p style="font-family:Arial Black; color:coral; font-size: 120%;"><strong>Choose a competition from the HomePage first please 🙂</strong></p>'
+sheet = '<p style="font-family:Arial Black; color:coral; font-size: 120%;"><strong>Please select which Highlight you wish to watch</strong></p>'
+err2_message = '<p style="font-family:Arial Black; color:coral; font-size: 120%;"><strong>We are sorry, the Highlight you want to watch doesnt exist in our database 😏</strong></p>'
+selectgame = '<p style="font-family:Arial Black; color:coral; font-size: 120%;"><strong>Please select a game from the menu on the left first 🙂</strong></p>'
 
 
 #config of the page
@@ -82,7 +102,7 @@ def make_df(data,vid_dir, ttag_dir):
                 st.session_state.timetags.append(row)
 
         st.session_state.the_vid = vid_dir
-        st.session_state.the_event = df.iloc[0, 1]
+        st.session_state.the_event = [df.iloc[0, 1],df.iloc[0,0]]
         #switch_page('games videos')                # EPILOGI 1 TON PIGAINO STO VIDEOS
         st.session_state.flag = True
 
@@ -107,7 +127,7 @@ with col1:
         if game_vid == "CSKA Moscow Vs Barcelona":
             st.write('This is the ' + game_vid + ' play by play text')
             df1 = pd.read_csv(filepaths.cska_barc_csv)
-            make_df(df1, filepaths.trim_vid_eu1, "eur1.csv")
+            make_df(df1, filepaths.cska_barc_vid, "eur1.csv")
 
         elif game_vid == "Olympiakos Vs Panathinaikos":
             st.write('This is the ' + game_vid + ' play by play text')
@@ -132,6 +152,8 @@ with col1:
     else:
         empty_line(3)
         st.markdown(err_message, unsafe_allow_html=True)
+        if st.button("🏠Homepage"):
+            switch_page('homepage')
         empty_line(2)
         st.image("https://qrs.in/frontent/images/noresult.png")
 

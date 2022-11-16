@@ -149,10 +149,12 @@ def easyOcr_dir(ocr_path):
     counter_1 = 0
     counter_2 = 0
 
+
     # loop for every frame in the dir
-    for filename in sorted(glob.glob(ocr_path + '/*.png'), key=numericalSort):
+    for filename in sorted(glob.glob(ocr_path + '/*.png'),key=numericalSort):
         counter_1 += 1
         ftail = ntpath.split(filename)[1]
+        # get the results
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ALL THIS IS THE PREPROCESSING PIPELINE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         im_cv2 = cv2.imread(filename)
@@ -169,6 +171,7 @@ def easyOcr_dir(ocr_path):
         # 3. Convert to Gray
         grimg = cv2.cvtColor(img_pim, cv2.COLOR_BGR2GRAY)
 
+
         # 3. thresholding image chose binary thresholding since it gives the best results( analusi kata to grapsimo )
         ret, thr_img = cv2.threshold(grimg, 120, 255, cv2.THRESH_BINARY)
         # 4. resize image x1.5 its original size
@@ -180,39 +183,52 @@ def easyOcr_dir(ocr_path):
         result = reader.readtext(big_img)
         if not result:
             continue
-        result = result[1][1]
-        print("The frame has these elements: ", ftail, result)
 
-        # get the results
+        quarter = result[0][1]
+        result = result[1][1]
+        print("The frame has these elements: ", ftail, result, quarter)
+
         if re.fullmatch(filepaths.time_pat2, result):
 
-            # dirty fix
-            if not re.fullmatch(filepaths.under_minute_format, result):
-                result = result.replace('.', ':').replace(',', ':').replace(';', ':')
 
-            print("Has this match: ", result)
+            if re.fullmatch('(\S*((1)|(1s|S|5))\S*)', quarter):
+                quarter = "1st Quarter"
+
+            elif re.fullmatch('(\S*(2|Z)\S*)|(\S*(ND)\S*)', quarter):
+                quarter = "2nd Quarter"
+
+            elif re.fullmatch('(\S*((J|J|3)|(RD|rd))\S*)', quarter):
+                quarter = "3rd Quarter"
+
+            elif re.fullmatch('(\S*((4TH|4|TH)|(AT|At))\S*)', quarter):
+                quarter = "4th Quarter"
+
             # replace commas with dots to increase ocr accuracy
             result = result.replace(',', '.')
 
-            # replace time tags when in under a minute to match play by play format
-            if re.fullmatch(filepaths.under_minute_format, result):
+            # dirty fix
+            if not re.fullmatch(filepaths.under_minute_format, result):
+                result = result.replace('.', ':').replace(';', ':')
+
+            else:
+                # replace time tags when in under a minute to match play by play format
                 third = result.split('.')[0]
                 if len(third) == 2:
                     result = "0:" + third
                 else:
                     result = "0:0" + third
 
-            print("Its a match: ", result)
+            print("Its a match: ", result, quarter)
             # getting frame_id
             z = re.findall('([0-9]+)', ftail)[0]
             # creating a list with timetag ocred + frame that was found on
-            ttags.append([result, z])
+            ttags.append([result, quarter, z])
             counter_2 += 1
 
         else:
             failrec.append(ftail)
 
-    # calculating the succes_rate for all frames OCRed
+    # calculating the success_rate for all frames OCRed
     success_rate = (counter_2 / counter_1) * 100
 
     # Printing stuff related to ocr success
@@ -231,18 +247,21 @@ def match_scl(trim_vid, vin_file, ocr_path, tmp_img, start_minute, end_minute):
     for f in os.listdir(ocr_path):
         os.remove(os.path.join(ocr_path, f))
 
-    #start_minute, end_minute = float(28.5) , float(48.5)
     new_flag = False
-
     if not os.path.exists(trim_vid) & new_flag:
-        print("\nCreating a clipped video of the '%s' match game video" % vin_file[-10: -4])
-        ffmpeg_extract_subclip(vin_file, 60 * start_minute, 60 * end_minute, targetname=trim_vid)
+
+        # read first frame from input video
+        if start_minute == 'start' and end_minute == 'end':
+            print("Get the whole video of '%s' game" % vin_file[-15: -4])
+            cap = cv2.VideoCapture(vin_file)
+        else:
+            print("\nCreating a clipped video of the '%s' match game video" % vin_file[-10: -4])
+            ffmpeg_extract_subclip(vin_file, 60 * start_minute, 60 * end_minute, targetname=trim_vid)
+            cap = cv2.VideoCapture(trim_vid)
 
     else:
         print("\nThe file '%s' is already here sir, lets proceed. " % trim_vid)
 
-    # read first frame from input video
-    cap = cv2.VideoCapture(trim_vid)
 
     # check if video stream is open
     if not cap.isOpened():
@@ -407,29 +426,30 @@ def csv_editor (filename):
 ############################################# VIDEO EDITING FUNCTIONS ############################################
 # create the Highlight video clip
 def clip_creator(trim_vid, myttag, ttaglist, myfps):
+    # delete the old clip
+    if os.path.exists(filepaths.clip_1):
+        os.remove(filepaths.clip_1)
+        print("Deleting the old file")
 
-    # videolcip init
+        # videolcip init
     videoclip = 0
     # flag to check if the video created
     vflag = False
-    for itime, fid in ttaglist:
+    for item in ttaglist:
 
-        if myttag in itime:
-            fr_id = float(fid)
-            print("\nFound timestamp: {0} in frame_id: {1}".format(itime, fr_id))
+        if myttag[0] in item[0] and myttag[1] in item[1]:
+            fr_id = float(item[2])
+            print("\nFound timestamp: {0} in frame_id: {1}".format(item[0], fr_id))
 
             # Clip creation creating subclip with duration [mysec-4, mysec+2]  #vrisko to sec thelo [mysec-6, mysec+2] h [fr_id -(fps* 6), fr_id +(fps* 2)]
             mysec = fr_id / myfps
-            ffmpeg_extract_subclip(trim_vid, mysec - 5, mysec + 1, targetname=filepaths.clip_1)
+            ffmpeg_extract_subclip(trim_vid, mysec - 4, mysec + 2, targetname=filepaths.clip_1)
             videoclip = filepaths.clip_1
             vflag = True
             break
 
-        if os.path.exists(filepaths.clip_1):
-            os.remove(filepaths.clip_1)
-            print("Deleting the old file")
-        else:
-            continue
+        elif myttag[0] in item[0] and myttag[1] not in item[2]:
+            print("\nWe dont have the quarter")
 
     return vflag, videoclip
     # # Play the video clip created
