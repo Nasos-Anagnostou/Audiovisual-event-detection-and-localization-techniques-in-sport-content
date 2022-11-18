@@ -233,10 +233,10 @@ def easyOcr_dir(ocr_path):
     success_rate = (counter_2 / counter_1) * 100
 
     # Printing stuff related to ocr success
-    print("\nYou found {} out of {} images successfully.".format(counter_2, counter_1))
-    print("\n Success rate of:", success_rate, "%")
     print("\n These images failed :", failrec)
     print("\n Timetags exported are: ", ttags)
+    print("\nYou found {} out of {} images successfully.".format(counter_2, counter_1))
+    print("\n Success rate of:", success_rate, "%")
 
     return ttags, success_rate
 
@@ -248,20 +248,21 @@ def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
     for f in os.listdir(ocr_path):
         os.remove(os.path.join(ocr_path, f))
 
-
-    if start_minute == 'start' and end_minute == 'end':
-        print("Get the whole video of '%s' game" % vin_file[-15: -4])
-        cap = cv2.VideoCapture(vin_file)
+    # if start_minute == 'start' and end_minute == 'end':
+    #     print("Get the whole video of '%s' game" % vin_file[-15: -4])
+    #     cap = cv2.VideoCapture(vin_file)
+    #
+    trim_vid = filepaths.trim_vid_eu + vin_file[68: -4] + '_trimmed.mp4'
+    new_flag = False
+    if not os.path.exists(trim_vid) & new_flag:
+        print("\nCreating a clipped video of the '%s' match game video" % vin_file[68: -4])
+        ffmpeg_extract_subclip(vin_file, 60 * start_minute, 60 * end_minute, targetname=trim_vid)
 
     else:
-        print("\nCreating a clipped video of the '%s' game" % vin_file[68: -4])
-        trim_vid = filepaths.trim_vid_eu + vin_file[68: -4] + '_trimmed.mp4'
+        print("\nThe file '%s' is already here, lets proceed." % trim_vid)
 
-        ffmpeg_extract_subclip(vin_file, 60 * start_minute, 60 * end_minute, targetname=trim_vid)
-        cap = cv2.VideoCapture(trim_vid)
-
-
-
+    # read first frame from input video
+    cap = cv2.VideoCapture(trim_vid)
     # check if video stream is open
     if not cap.isOpened():
         print("Error opening video  file")
@@ -270,8 +271,11 @@ def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
     myfps = cap.get(5)
     print("\nFrame rate of this video is: ", myfps)
 
+    # obj detect with nn model
+    #tmp_img_nn = detect_custom_object(frame)
+
     # Template image , edw mporw na valw to output tou automation
-    template = cv2.imread(tmp_img)  # load the template image
+    template = cv2.imread(tmp_img)  # load the template image             AN THELW  NA XRHSIMOPOIHSW OBJ DET vazw temp_img_nn
     gray_tem = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)  # convert it to grayscale
 
     # loop through every frame read by input
@@ -285,9 +289,6 @@ def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
         ret, frame = cap.read()
         # print('read a new frame:', ret)
 
-        # obj detect with nn model
-        #template_nn = detect_custom_object(frame)
-        #template = cv2.imread(template_nn)  # load the template image
 
         # take 2 frames per every second, one each 500msec
         if ret & ((frameid % math.floor(myfps) == 0) | (frameid % math.floor(myfps) == math.ceil(myfps / 2))):
@@ -342,7 +343,7 @@ def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
                 # we just found the first mathcing image so we use it as the template from now on!
                 first_time = False
                 # threshold n2 is higher because we use the boxscore of the same game now
-                threshold = 0.75
+                threshold = 0.6
 
                 (startX, startY) = (int(maxLoc[0]), int(maxLoc[1]))
                 (endX, endY) = (int(maxLoc[0] + tW), int(maxLoc[1] + tH))
@@ -354,6 +355,10 @@ def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
                 # cv2.imshow("cropped", crop_img)
                 # cv2.waitKey(0)
                 print(found, frameid)
+
+            else:
+                print("Didnt make it")
+
 
     # close capture
     cap.release()
@@ -474,7 +479,6 @@ def clip_creator(trim_vid, myttag, ttaglist, myfps):
     # cap.release()
     # cv2.destroyAllWindows()
 
-
 def eur_scrapper(game_name):
     ######################### seasoncode=? kai gamecode=? apo to site ths euroleague
     #game_name = 'game1.csv'
@@ -507,3 +511,28 @@ def eur_scrapper(game_name):
     frames = (df1Q, df2Q, df3Q, df4Q)
     result = pd.concat(frames)
     result.to_csv(os.path.join(r"E:\Career files\Degree Thesis\2. Dataset\competition_paths\csv_paths\csv_eur", game_name))
+
+def template_finder(tmpl_path,trim_vid):
+    # read first frame from input video
+    cap = cv2.VideoCapture(trim_vid)
+    # check if video stream is open
+    if not cap.isOpened():
+        print("Error opening video  file")
+
+    myfps = cap.get(5)
+    ret = True
+    while ret:
+        # obj detect with nn model
+        frameid = cap.get(1)
+        ret, frame = cap.read()
+        if ret & (frameid % math.floor(myfps) == 0):
+
+            template_nn, flag = detect_custom_object(frame)
+            if flag:
+                break
+
+    template = cv2.imread(template_nn)  # load the template image
+    print("Found in frame: ", frameid)
+
+    template_path = os.path.join(tmpl_path, "template_eu.jpg")
+    cv2.imwrite(template_path, template)

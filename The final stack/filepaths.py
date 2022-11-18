@@ -30,10 +30,12 @@ cska_bayern_csv = root_path + r"/csv_paths/csv_eur/cska_bayern.csv"
 
 # 3. input template and full game video file
 cska_barc_vid = root_path + r"/game_vid/CSKA_BARCA.mp4"
+oly_pao_vid = root_path + r"/game_vid/Olympiakos vs Panathinaikos_Euroleague 2021 J24.mp4"
 cska_bayern_vid = root_path + r"/game_vid/Cska Moscow vs Bayern Munich Full Game Euroleague Round 23.mp4"
-oly_pao_vid = root_path + r"/game_vid/Olympiacos Piraeus vs Panathinaikos OPAP Athens Full Game Euroleague Round 24.mp4"
+
 
 # 4. image template for each competition
+template_root = r"E:\Career files\Degree Thesis\2. Dataset\competition_paths\tmp_path/"
 tmp_eu  = root_path + r"/tmp_path/timebox_eu.jpg"
 tmp_nba = root_path + r"/tmp_path/timebox_nba.jpg"
 tmp_gr  = root_path + r"/tmp_path/timebox_gr.jpg"

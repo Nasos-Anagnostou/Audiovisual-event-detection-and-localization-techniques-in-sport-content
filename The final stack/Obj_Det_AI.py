@@ -26,7 +26,7 @@ def evaluate_models(dataset_dir):
 # 3. Detection of object with the best model
 def detect_custom_object(in_frame):
 
-    my_dir = r"E:\Career files\Degree Thesis\Dataset\Images Dataset\Object_Det_files/"
+    my_dir = r"E:\Career files\Degree Thesis\2. Dataset\Images Dataset\Object_Det_files/"
     os.chdir(my_dir)
 
     detector = CustomObjectDetection()
@@ -36,13 +36,24 @@ def detect_custom_object(in_frame):
     detector.loadModel()
     detections, extracted_images = detector.detectObjectsFromImage(input_image=in_frame,
                                                                    output_image_path= "dump\detected.jpg",
+                                                                   input_type="array", # ANALOGA TI THELW EDW
                                                                    extract_detected_objects=True)
     for detection in detections:
         print(detection["name"], " : ", detection["percentage_probability"], " : ", detection["box_points"])
 
-    img_det = extracted_images[0]
+    flag = False
+    if extracted_images:
+        img_det = extracted_images[0]
+        flag = True
+        return img_det, flag
+    else:
+        print("Didnt find any objects")
+        return None, flag
+
+
     #img_d = cv2.imread(img_det)
+    #print(type(img_d))
     #cv2.imshow("",img_d)
     #cv2.waitKey(0)
 
-    return img_det
+

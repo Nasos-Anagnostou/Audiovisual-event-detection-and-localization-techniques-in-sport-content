@@ -101,8 +101,9 @@ def make_df(data,vid_dir, ttag_dir):
             for row in data:
                 st.session_state.timetags.append(row)
 
-        st.session_state.the_vid = vid_dir
-        st.session_state.the_event = [df.iloc[0, 1],df.iloc[0,0]]
+        trim_vid = filepaths.trim_vid_eu + vid_dir[68: -4] + '_trimmed.mp4'
+        st.session_state.the_vid = trim_vid
+        st.session_state.the_event = [df.iloc[0, 1], df.iloc[0, 0]]
         #switch_page('games videos')                # EPILOGI 1 TON PIGAINO STO VIDEOS
         st.session_state.flag = True
 
@@ -132,12 +133,12 @@ with col1:
         elif game_vid == "Olympiakos Vs Panathinaikos":
             st.write('This is the ' + game_vid + ' play by play text')
             df2 = pd.read_csv(filepaths.oly_pao_csv)
-            make_df(df2, filepaths.trim_vid_eu2, "eur2.csv")
+            make_df(df2, filepaths.oly_pao_vid, "eur2.csv")
 
         elif game_vid == "CSKA Moscow Vs Bayern Munich":
             st.write('This is the ' + game_vid + ' play by play text')
             df3 = pd.read_csv(filepaths.cska_bayern_csv)
-            make_df(df3, filepaths.trim_vid_eu3, "eur3.csv")  # gia na steilo to video sto backend
+            make_df(df3, filepaths.cska_bayern_vid, "eur3.csv")  # gia na steilo to video sto backend
 
         else:
             st.session_state.flag = False
@@ -169,7 +170,7 @@ with col2:                                              # EPILOGI 2 TA EMFANIZO 
     # create the Highlight clip if the timetag is correct else display error message
     vid_exist, videoclip = clip_creator(my_vid, my_event, my_tags, 25)
 
-    if vid_exist:
+    if vid_exist and st.session_state.flag:
         # create a nice temple for video
         image1 = Image.open('upper.jpg')
         st.image(image1)
