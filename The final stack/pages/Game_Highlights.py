@@ -15,13 +15,15 @@ from PIL import Image
 
 # euroleague games
 euro_games = ("Choose from the available Games", "CSKA Moscow Vs Barcelona", "Olympiakos Vs Panathinaikos", "CSKA Moscow Vs Bayern Munich")
-eur1_ttag = filepaths.timetags + "/eur1.csv"
 #nba games
 nba_games = ("none")
 # basket league games
 grbl_games = ("none")
 
 
+# Initialization of the fps variable
+if "fps" not in st.session_state:
+    st.session_state['fps'] = 25
 # Initialization of the game video variable
 if "the_vid" not in st.session_state:
     st.session_state['the_vid'] = "0"
@@ -65,7 +67,7 @@ if st.sidebar.button("🏠Return to Homepage"):
 ################################################# CODE STUFF #################################################
 col1, col2 = st.columns(2, gap="large")
 # make Dataframes clickable
-def make_df(data,vid_dir, ttag_dir):
+def make_df(data, vid_dir, ttag_dir):
 
     gb = GridOptionsBuilder.from_dataframe(data)
     gb.configure_pagination(paginationAutoPageSize=True)  # Add pagination
@@ -95,11 +97,16 @@ def make_df(data,vid_dir, ttag_dir):
     # # If a game is chosen  store the event to pass it next page !! CLICK !!
     if (not df.empty) and (game_vid != "Choose from the available Games"):
 
+        st.session_state.timetags = []
         # get the stored event from another page
         with open(os.path.join(filepaths.timetags, ttag_dir), newline='') as csvfile:
             data = csv.reader(csvfile)
             for row in data:
                 st.session_state.timetags.append(row)
+
+        with open(os.path.join(filepaths.timetags, 'nasos.txt'), "r") as rfile:
+            st.session_state.fps = float(rfile.read())
+
 
         trim_vid = filepaths.trim_vid_eu + vid_dir[68: -4] + '_trimmed.mp4'
         st.session_state.the_vid = trim_vid
@@ -128,7 +135,7 @@ with col1:
         if game_vid == "CSKA Moscow Vs Barcelona":
             st.write('This is the ' + game_vid + ' play by play text')
             df1 = pd.read_csv(filepaths.cska_barc_csv)
-            make_df(df1, filepaths.cska_barc_vid, "eur1.csv")
+            make_df(df1, filepaths.cska_barc_vid, "eur4.csv")
 
         elif game_vid == "Olympiakos Vs Panathinaikos":
             st.write('This is the ' + game_vid + ' play by play text')
@@ -166,9 +173,11 @@ with col2:                                              # EPILOGI 2 TA EMFANIZO 
     my_event = st.session_state.the_event
     my_tags = st.session_state.timetags
     my_vid = st.session_state.the_vid
+    my_fps = st.session_state.fps
+
 
     # create the Highlight clip if the timetag is correct else display error message
-    vid_exist, videoclip = clip_creator(my_vid, my_event, my_tags, 25)
+    vid_exist, videoclip = clip_creator(my_vid, my_event, my_tags, my_fps)
 
     if vid_exist and st.session_state.flag:
         # create a nice temple for video

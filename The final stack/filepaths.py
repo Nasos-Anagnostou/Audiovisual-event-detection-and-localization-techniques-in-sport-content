@@ -21,6 +21,7 @@ timetags = root_path + r"/timetags"
 ocr_eu1 = root_path + r"/ocr_paths/ocr_eu1/"  # dimiourgia neou xorou kathe fora? - move to aligner
 ocr_eu2 = root_path + r"/ocr_paths/ocr_eu2/"
 ocr_eu3 = root_path + r"/ocr_paths/ocr_eu3/"
+ocr_nba1 = root_path + r"/ocr_paths/ocr_nba1/"
 
 # 2. csv files for each competition and each game
 #euroleague
@@ -32,6 +33,7 @@ cska_bayern_csv = root_path + r"/csv_paths/csv_eur/cska_bayern.csv"
 cska_barc_vid = root_path + r"/game_vid/CSKA_BARCA.mp4"
 oly_pao_vid = root_path + r"/game_vid/Olympiakos vs Panathinaikos_Euroleague 2021 J24.mp4"
 cska_bayern_vid = root_path + r"/game_vid/Cska Moscow vs Bayern Munich Full Game Euroleague Round 23.mp4"
+bucks_lakers_vid = root + r"/2. Dataset/game videos/Milwaukee Bucks vs Los Angeles Clippers 06.02.2022.mp4"
 
 
 # 4. image template for each competition

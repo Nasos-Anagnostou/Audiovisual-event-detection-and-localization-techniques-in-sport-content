@@ -235,7 +235,7 @@ def easyOcr_dir(ocr_path):
     # Printing stuff related to ocr success
     print("\n These images failed :", failrec)
     print("\n Timetags exported are: ", ttags)
-    print("\nYou found {} out of {} images successfully.".format(counter_2, counter_1))
+    print("\n You found {} out of {} images successfully.".format(counter_2, counter_1))
     print("\n Success rate of:", success_rate, "%")
 
     return ttags, success_rate
@@ -441,7 +441,7 @@ def clip_creator(trim_vid, myttag, ttaglist, myfps):
     vflag = False
     for item in ttaglist:
 
-        if myttag[0] in item[0] and myttag[1] in item[1]:
+        if (myttag[0] in item[0]) and (myttag[1] in item[1]):
             fr_id = float(item[2])
             print("\nFound timestamp: {0} in frame_id: {1}".format(item[0], fr_id))
 
@@ -455,9 +455,12 @@ def clip_creator(trim_vid, myttag, ttaglist, myfps):
         elif myttag[0] in item[0] and myttag[1] not in item[2]:
             print("\nWe dont have the quarter")
 
-    return vflag, videoclip
+        else:
+            print("we dont have shit")
+
+
     # # Play the video clip created
-    # cap = cv2.VideoCapture(videoclip_1)
+    # cap = cv2.VideoCapture(videoclip)
     # fps = int(cap.get(cv2.CAP_PROP_FPS))   # or cap.get(5)
     #
     # if not cap.isOpened():
@@ -469,7 +472,7 @@ def clip_creator(trim_vid, myttag, ttaglist, myfps):
     #
     #     if ret:
     #         time.sleep(1/fps)
-    #         cv2.imshow('frame', frame)
+    #         cv2.imshow('Highlight!', frame)
     #         if cv2.waitKey(1) & 0xFF == ord('q'):
     #             break
     #     else:
@@ -478,6 +481,7 @@ def clip_creator(trim_vid, myttag, ttaglist, myfps):
     # # close capture
     # cap.release()
     # cv2.destroyAllWindows()
+    return vflag, videoclip
 
 def eur_scrapper(game_name):
     ######################### seasoncode=? kai gamecode=? apo to site ths euroleague
@@ -512,7 +516,7 @@ def eur_scrapper(game_name):
     result = pd.concat(frames)
     result.to_csv(os.path.join(r"E:\Career files\Degree Thesis\2. Dataset\competition_paths\csv_paths\csv_eur", game_name))
 
-def template_finder(tmpl_path,trim_vid):
+def template_finder(tmpl_path, trim_vid):
     # read first frame from input video
     cap = cv2.VideoCapture(trim_vid)
     # check if video stream is open
