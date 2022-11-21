@@ -7,7 +7,7 @@ import os
 import csv
 import timeit
 import filepaths
-from ocr_fun import easyOcr_dir2
+from ocr_fun import easyOcr_dir2, tess_dir2, easyOcr_dir3
 from csv_fun import csv_editor
 from all_functions import match_scl, tess_dir, easyOcr_dir, clip_creator, template_finder
 
@@ -19,7 +19,7 @@ from all_functions import match_scl, tess_dir, easyOcr_dir, clip_creator, templa
 
 
 # 2. get the matching frames with temp img with match_scl()
-myfps = match_scl(filepaths.oly_pao_vid, filepaths.ocr_eu2, filepaths.tmp_eu, 'start', 'end')
+#myfps = match_scl(filepaths.oly_pao_vid, filepaths.ocr_eu2, filepaths.tmp_eu, 'start', 'end')
 # # store fps for later use
 # with open(os.path.join(filepaths.timetags, 'nasos.txt'), "w") as wfile:
 #     wfile.write(str(myfps))
@@ -29,15 +29,17 @@ myfps = match_scl(filepaths.oly_pao_vid, filepaths.ocr_eu2, filepaths.tmp_eu, 's
 # tesseract configuration, see tesseract documentation for more
 #conf = r'--oem 0 --psm 6'
 # Tesseract
-#ttags, succ_r = tess_dir(filepaths.ocr_eu3)
+#ttags, succ_r = tess_dir2(filepaths.ocr_nba1)
 
-#easyOcr
-ttags, succ_r = easyOcr_dir(filepaths.ocr_eu2)    # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+#easyOcr3 gia ta wer
+ttags, alltags = easyOcr_dir3(filepaths.ocr_eu1)    # TA TTAGS GIA KATHE MATCH ALLO FAKELO
 # store ttags list for frontend
-with open(os.path.join(filepaths.timetags, "eur1.csv"), "w", newline='') as f:
+with open(os.path.join(filepaths.timetags, "ref.csv"), "w", newline='') as f:
     wr = csv.writer(f)
     wr.writerows(ttags)
-
+with open(os.path.join(filepaths.timetags, "ttags.csv"), "w", newline='') as f:
+    wr = csv.writer(f)
+    wr.writerows(alltags)
 
 ################################################### TEST ########################################################
 #myfps = match_scl(filepaths.cska_bayern_vid, filepaths.ocr_eu2, filepaths.tmp_eu, 0, 99)

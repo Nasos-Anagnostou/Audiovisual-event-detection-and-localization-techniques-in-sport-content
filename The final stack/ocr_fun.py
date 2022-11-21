@@ -32,15 +32,21 @@ def numericalSort(value):
     return parts
 
 # tesseract ocr function
-def tess_dir(dir_path, time_pattern, configure):
+def tess_dir2(ocr_path):
+    # tesseract allocation
+    pytesseract.pytesseract.tesseract_cmd = r"E:\programs\tessaract\tesseract.exe"
+    # tesseract configure
+    configure = r'--oem 0 --psm 6'
+
     # initialise vars
     counter_1 = 0
     counter_2 = 0
     timetags = []
+    alltimetags = []
     failrec = []
 
     # loop for every frame in the dir
-    for filename in sorted(glob.glob(dir_path + '/*.png'), key=numericalSort):
+    for filename in sorted(glob.glob(ocr_path + '/*.png'), key=numericalSort):
 
         # get the filename not the whole path
         ftail = ntpath.split(filename)[1]
@@ -95,7 +101,7 @@ def tess_dir(dir_path, time_pattern, configure):
 
             if not success_flag:
 
-                if re.fullmatch(time_pattern, item):
+                if re.fullmatch(filepaths.time_pat, item):
 
                     # timetag parsing success inform
                     print("This is a match!", item)
@@ -104,9 +110,13 @@ def tess_dir(dir_path, time_pattern, configure):
                     gs[i] = item.replace(',', '.')
 
                     # replace time tags when in under a minute to match play by play format
-                    if re.fullmatch(under_minute_format, gs[i]):
+                    if re.fullmatch(filepaths.under_minute_format, gs[i]):
                         third = gs[i].split('.')[0]
-                        gs[i] = "0:" + third
+
+                        if len(third) == 2:
+                            gs[i] = "0:" + third
+                        else:
+                            gs[i] = "0:0" + third
 
                     # getting frame_id
                     z = re.findall('([0-9]+)', ftail)[0]
@@ -134,54 +144,16 @@ def tess_dir(dir_path, time_pattern, configure):
 
 
 # easyOcr ocr function
-def easyOcr_dir(dir_path, time_pat):
+def easyOcr_dir3(ocr_path):
 
-    ttags = []
-    counter_1 = 0
-    counter_2 = 0
-
-    # loop for every frame in the dir
-    for filename in sorted(glob.glob(dir_path + '/*.png'),key=numericalSort):
-
-        ftail = ntpath.split(filename)[1]
-
-        result = reader.readtext(filename)[1][1]
-        print("The frame has this elements: ", ftail, result)
-
-        # dirty fix
-        if not re.fullmatch(under_minute_format, result):
-            result = result.replace('.', ':')
-
-        counter_1 += 1
-        if re.fullmatch(time_pat, result):
-            # timetag parsing success inform
-            print("This is a match!", result)
-
-            new_res = result.replace(',', '.')
-
-            z = re.findall('([0-9]+)', ftail)[0]
-            ttags.append([new_res, z])
-            counter_2 += 1
-
-    # calculating the succes_rate for all frames OCRed
-    success_rate = (counter_2 / counter_1) * 100
-
-    # Printing stuff related to ocr success
-    print("\nYou found {} out of {} images successfully.".format(counter_2, counter_1))
-    print("\n Success rate of:", success_rate, "%")
-    print("\n Timetags exported are: ", ttags)
-
-    return ttags, success_rate
-
-def easyOcr_dir2(dir_path):
+    alltimetags = []
     ttags = []
     failrec = []
     counter_1 = 0
     counter_2 = 0
 
-
     # loop for every frame in the dir
-    for filename in sorted(glob.glob(dir_path + '/*.png'),key=numericalSort):
+    for filename in sorted(glob.glob(ocr_path + '/*.png'), key=numericalSort):
         counter_1 += 1
         ftail = ntpath.split(filename)[1]
         # get the results
@@ -201,12 +173,13 @@ def easyOcr_dir2(dir_path):
         # 3. Convert to Gray
         grimg = cv2.cvtColor(img_pim, cv2.COLOR_BGR2GRAY)
 
-
         # 3. thresholding image chose binary thresholding since it gives the best results( analusi kata to grapsimo )
         ret, thr_img = cv2.threshold(grimg, 120, 255, cv2.THRESH_BINARY)
+
         # 4. resize image x1.5 its original size
         (origW, origH) = pim.size
         big_img = cv2.resize(thr_img, (int(1.5 * origW), int(1.5 * origH)), interpolation=cv2.INTER_LINEAR)
+
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ALL THIS IS THE PREPROCESSING PIPELINE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         # read the ocr items and check if the list is empty
@@ -216,10 +189,10 @@ def easyOcr_dir2(dir_path):
 
         quarter = result[0][1]
         result = result[1][1]
+        alltimetags.append([result, quarter, ftail])
         print("The frame has these elements: ", ftail, result, quarter)
 
         if re.fullmatch(filepaths.time_pat2, result):
-
 
             if re.fullmatch('(\S*((1)|(1s|S|5))\S*)', quarter):
                 quarter = "1st Quarter"
@@ -262,10 +235,108 @@ def easyOcr_dir2(dir_path):
     success_rate = (counter_2 / counter_1) * 100
 
     # Printing stuff related to ocr success
-    print("\nYou found {} out of {} images successfully.".format(counter_2, counter_1))
-    print("\n Success rate of:", success_rate, "%")
     print("\n These images failed :", failrec)
     print("\n Timetags exported are: ", ttags)
+    print("\n You found {} out of {} images successfully.".format(counter_2, counter_1))
+    print("\n Success rate of:", success_rate, "%")
+
+    return ttags, alltimetags
+
+def easyOcr_dir2(ocr_path):
+
+    ttags = []
+    failrec = []
+    counter_1 = 0
+    counter_2 = 0
+
+    # loop for every frame in the dir
+    for filename in sorted(glob.glob(ocr_path + '/*.png'), key=numericalSort):
+        counter_1 += 1
+        ftail = ntpath.split(filename)[1]
+        # get the results
+
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ALL THIS IS THE PREPROCESSING PIPELINE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        im_cv2 = cv2.imread(filename)
+        pim = Image.fromarray(im_cv2)
+
+        # 1. enhance image sharpness given a specific factor
+        enhancer = ImageEnhance.Sharpness(pim)
+        factor_sharp = 2
+        pim_en = enhancer.enhance(factor_sharp)
+        # CV input from PIL and Convert RGB to BGR
+        img_pim = np.array(pim_en)
+        img_pim = img_pim[:, :, ::-1].copy()
+
+        # 3. Convert to Gray
+        grimg = cv2.cvtColor(img_pim, cv2.COLOR_BGR2GRAY)
+
+        # 3. thresholding image chose binary thresholding since it gives the best results( analusi kata to grapsimo )
+        ret, thr_img = cv2.threshold(grimg, 120, 255, cv2.THRESH_BINARY)
+        cv2.imshow("",thr_img)
+        cv2.waitKey(0)
+        # 4. resize image x1.5 its original size
+        (origW, origH) = pim.size
+        big_img = cv2.resize(thr_img, (int(1.3 * origW), int(1.3 * origH)), interpolation=cv2.INTER_LINEAR)
+        cv2.imshow("", big_img)
+        cv2.waitKey(0)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ALL THIS IS THE PREPROCESSING PIPELINE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        # read the ocr items and check if the list is empty
+        result = reader.readtext(big_img)
+        if not result:
+            continue
+
+        quarter = result[0][1]
+        result = result[1][1]
+        print("The frame has these elements: ", ftail, result, quarter)
+
+        if re.fullmatch(filepaths.time_pat, result):
+
+            if re.fullmatch('(\S*((1)|(1s|S|5))\S*)', quarter):
+                quarter = "1st Quarter"
+
+            elif re.fullmatch('(\S*(2|Z)\S*)|(\S*(ND)\S*)', quarter):
+                quarter = "2nd Quarter"
+
+            elif re.fullmatch('(\S*((J|J|3)|(RD|rd))\S*)', quarter):
+                quarter = "3rd Quarter"
+
+            elif re.fullmatch('(\S*((4TH|4|TH)|(AT|At))\S*)', quarter):
+                quarter = "4th Quarter"
+
+            # replace commas with dots to increase ocr accuracy
+            result = result.replace(',', '.')
+
+            # dirty fix
+            if not re.fullmatch(filepaths.under_minute_format, result):
+                result = result.replace('.', ':').replace(';', ':')
+
+            else:
+                # replace time tags when in under a minute to match play by play format
+                third = result.split('.')[0]
+                if len(third) == 2:
+                    result = "0:" + third
+                else:
+                    result = "0:0" + third
+
+            print("Its a match: ", result, quarter)
+            # getting frame_id
+            z = re.findall('([0-9]+)', ftail)[0]
+            # creating a list with timetag ocred + frame that was found on
+            ttags.append([result, quarter, z])
+            counter_2 += 1
+
+        else:
+            failrec.append(ftail)
+
+    # calculating the success_rate for all frames OCRed
+    success_rate = (counter_2 / counter_1) * 100
+
+    # Printing stuff related to ocr success
+    print("\n These images failed :", failrec)
+    print("\n Timetags exported are: ", ttags)
+    print("\n You found {} out of {} images successfully.".format(counter_2, counter_1))
+    print("\n Success rate of:", success_rate, "%")
 
     return ttags, success_rate
 

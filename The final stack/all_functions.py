@@ -114,7 +114,12 @@ def tess_dir(ocr_path):
                     # replace time tags when in under a minute to match play by play format
                     if re.fullmatch(filepaths.under_minute_format, gs[i]):
                         third = gs[i].split('.')[0]
-                        gs[i] = "0:" + third
+
+                        if len(third) == 2:
+                            gs[i] = "0:" + third
+                        else:
+                            gs[i] = "0:0" + third
+
 
                     # getting frame_id
                     z = re.findall('([0-9]+)', ftail)[0]
@@ -249,7 +254,7 @@ def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
         os.remove(os.path.join(ocr_path, f))
 
     if start_minute == 'start' and end_minute == 'end':
-        print("Get the whole video of '%s' game" % vin_file[-15: -4])
+        print("Get the whole video of '%s' game" % vin_file[68: -4])
         trim_vid = vin_file
     else:
         print("\nCreating a clipped video of the '%s' match game video" % vin_file[68: -4])
