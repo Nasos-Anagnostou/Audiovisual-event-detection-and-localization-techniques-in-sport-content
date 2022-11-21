@@ -19,7 +19,7 @@ from all_functions import match_scl, tess_dir, easyOcr_dir, clip_creator, templa
 
 
 # 2. get the matching frames with temp img with match_scl()
-myfps = match_scl(filepaths.cska_barc_vid, filepaths.ocr_nba1, filepaths.tmp_eu, 15, 17)
+myfps = match_scl(filepaths.oly_pao_vid, filepaths.ocr_eu2, filepaths.tmp_eu, 'start', 'end')
 # # store fps for later use
 # with open(os.path.join(filepaths.timetags, 'nasos.txt'), "w") as wfile:
 #     wfile.write(str(myfps))
@@ -32,9 +32,9 @@ myfps = match_scl(filepaths.cska_barc_vid, filepaths.ocr_nba1, filepaths.tmp_eu,
 #ttags, succ_r = tess_dir(filepaths.ocr_eu3)
 
 #easyOcr
-ttags, succ_r = easyOcr_dir(filepaths.ocr_nba1)    # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+ttags, succ_r = easyOcr_dir(filepaths.ocr_eu2)    # TA TTAGS GIA KATHE MATCH ALLO FAKELO
 # store ttags list for frontend
-with open(os.path.join(filepaths.timetags, "eur4.csv"), "w", newline='') as f:
+with open(os.path.join(filepaths.timetags, "eur1.csv"), "w", newline='') as f:
     wr = csv.writer(f)
     wr.writerows(ttags)
 

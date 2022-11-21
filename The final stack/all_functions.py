@@ -248,18 +248,14 @@ def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
     for f in os.listdir(ocr_path):
         os.remove(os.path.join(ocr_path, f))
 
-    # if start_minute == 'start' and end_minute == 'end':
-    #     print("Get the whole video of '%s' game" % vin_file[-15: -4])
-    #     cap = cv2.VideoCapture(vin_file)
-    #
-    trim_vid = filepaths.trim_vid_eu + vin_file[68: -4] + '_trimmed.mp4'
-    new_flag = False
-    if not os.path.exists(trim_vid) & new_flag:
+    if start_minute == 'start' and end_minute == 'end':
+        print("Get the whole video of '%s' game" % vin_file[-15: -4])
+        trim_vid = vin_file
+    else:
         print("\nCreating a clipped video of the '%s' match game video" % vin_file[68: -4])
+        trim_vid = filepaths.trim_vid_eu + vin_file[68: -4] + '_trimmed.mp4'
         ffmpeg_extract_subclip(vin_file, 60 * start_minute, 60 * end_minute, targetname=trim_vid)
 
-    else:
-        print("\nThe file '%s' is already here, lets proceed." % trim_vid)
 
     # read first frame from input video
     cap = cv2.VideoCapture(trim_vid)
@@ -343,7 +339,7 @@ def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
                 # we just found the first mathcing image so we use it as the template from now on!
                 first_time = False
                 # threshold n2 is higher because we use the boxscore of the same game now
-                threshold = 0.6
+                threshold = 0.65
 
                 (startX, startY) = (int(maxLoc[0]), int(maxLoc[1]))
                 (endX, endY) = (int(maxLoc[0] + tW), int(maxLoc[1] + tH))

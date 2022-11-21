@@ -135,7 +135,7 @@ with col1:
         if game_vid == "CSKA Moscow Vs Barcelona":
             st.write('This is the ' + game_vid + ' play by play text')
             df1 = pd.read_csv(filepaths.cska_barc_csv)
-            make_df(df1, filepaths.cska_barc_vid, "eur4.csv")
+            make_df(df1, filepaths.cska_barc_vid, "eur1.csv")
 
         elif game_vid == "Olympiakos Vs Panathinaikos":
             st.write('This is the ' + game_vid + ' play by play text')
