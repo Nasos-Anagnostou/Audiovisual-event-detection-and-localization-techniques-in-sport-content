@@ -150,11 +150,11 @@ def easyOcr_dir(ocr_path):
     # EasyOcr Reader initialisation
     reader = easyocr.Reader(['en'], gpu=False)
 
+    alltimetags = []
     ttags = []
     failrec = []
     counter_1 = 0
     counter_2 = 0
-
 
     # loop for every frame in the dir
     for filename in sorted(glob.glob(ocr_path + '/*.png'),key=numericalSort):
@@ -180,6 +180,7 @@ def easyOcr_dir(ocr_path):
 
         # 3. thresholding image chose binary thresholding since it gives the best results( analusi kata to grapsimo )
         ret, thr_img = cv2.threshold(grimg, 120, 255, cv2.THRESH_BINARY)
+
         # 4. resize image x1.5 its original size
         (origW, origH) = pim.size
         big_img = cv2.resize(thr_img, (int(1.5 * origW), int(1.5 * origH)), interpolation=cv2.INTER_LINEAR)
@@ -192,10 +193,10 @@ def easyOcr_dir(ocr_path):
 
         quarter = result[0][1]
         result = result[1][1]
+        alltimetags.append([result, quarter, ftail])
         print("The frame has these elements: ", ftail, result, quarter)
 
         if re.fullmatch(filepaths.time_pat2, result):
-
 
             if re.fullmatch('(\S*((1)|(1s|S|5))\S*)', quarter):
                 quarter = "1st Quarter"
@@ -243,7 +244,7 @@ def easyOcr_dir(ocr_path):
     print("\n You found {} out of {} images successfully.".format(counter_2, counter_1))
     print("\n Success rate of:", success_rate, "%")
 
-    return ttags, success_rate
+    return ttags, alltimetags
 
 ############################################# OBJECT DETECTION FUNCTIONS ########################################
 # Template matching

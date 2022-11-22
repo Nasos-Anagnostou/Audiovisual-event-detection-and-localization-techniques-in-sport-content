@@ -32,7 +32,7 @@ from all_functions import match_scl, tess_dir, easyOcr_dir, clip_creator, templa
 #ttags, succ_r = tess_dir2(filepaths.ocr_nba1)
 
 #easyOcr3 gia ta wer
-ttags, alltags = easyOcr_dir3(filepaths.ocr_eu1)    # TA TTAGS GIA KATHE MATCH ALLO FAKELO
+ttags, alltags = easyOcr_dir(filepaths.ocr_eu4)    # TA TTAGS GIA KATHE MATCH ALLO FAKELO
 # store ttags list for frontend
 with open(os.path.join(filepaths.timetags, "ref.csv"), "w", newline='') as f:
     wr = csv.writer(f)

@@ -179,7 +179,6 @@ def easyOcr_dir3(ocr_path):
         # 4. resize image x1.5 its original size
         (origW, origH) = pim.size
         big_img = cv2.resize(thr_img, (int(1.5 * origW), int(1.5 * origH)), interpolation=cv2.INTER_LINEAR)
-
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ALL THIS IS THE PREPROCESSING PIPELINE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         # read the ocr items and check if the list is empty
