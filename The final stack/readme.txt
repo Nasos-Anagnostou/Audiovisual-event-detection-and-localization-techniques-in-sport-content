@@ -12,4 +12,4 @@
 
 7) easyOcr = easyOcr OCR engine used to parse timetags for each frame detected
 
-8) Obj_Det_AI  = ROI localization using a a pre-trained YOLOV3 model to generate a custom model for the timebox
+8) Obj_Det_AI  = ROI localization using a a pre-trained YOLOV3 model to generate a custom model for the timebox.
