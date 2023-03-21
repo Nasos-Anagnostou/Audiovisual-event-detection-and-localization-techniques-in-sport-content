@@ -21,6 +21,8 @@ timetags = root_path + r"/timetags"
 ocr_eu1 = root_path + r"/ocr_paths/ocr_eu1/"  # dimiourgia neou xorou kathe fora? - move to aligner
 ocr_eu2 = root_path + r"/ocr_paths/ocr_eu2/"
 ocr_eu3 = root_path + r"/ocr_paths/ocr_eu3/"
+ocr_eu4 = root_path + r"/ocr_paths/ocr_eu4/"
+ocr_temp = root_path + r"/ocr_paths/ocr_temp/"
 ocr_nba1 = root_path + r"/ocr_paths/ocr_nba1/"
 
 # 2. csv files for each competition and each game
@@ -28,17 +30,20 @@ ocr_nba1 = root_path + r"/ocr_paths/ocr_nba1/"
 cska_barc_csv = root_path + r"/csv_paths/csv_eur/cska_barc.csv"
 oly_pao_csv = root_path + r"/csv_paths/csv_eur/oly_pao.csv"
 cska_bayern_csv = root_path + r"/csv_paths/csv_eur/cska_bayern.csv"
+fener_zalgiris = root_path + r"/csv_paths/csv_eur/fener_zalgiris.csv"
 
 # 3. input template and full game video file
 cska_barc_vid = root_path + r"/game_vid/CSKA_BARCA.mp4"
 oly_pao_vid = root_path + r"/game_vid/Olympiakos vs Panathinaikos_Euroleague 2021 J24.mp4"
 cska_bayern_vid = root_path + r"/game_vid/Cska Moscow vs Bayern Munich Full Game Euroleague Round 23.mp4"
+fener_zalgiris_vid = root_path + r"/game_vid/Fenerbahce Istanbul vs Zalgiris Kaunas EUROLEAGUE FULL GAME.mp4"
 bucks_lakers_vid = root + r"/2. Dataset/game videos/Milwaukee Bucks vs Los Angeles Clippers 06.02.2022.mp4"
 
 
 # 4. image template for each competition
 template_root = r"E:\Career files\Degree Thesis\2. Dataset\competition_paths\tmp_path/"
 tmp_eu  = root_path + r"/tmp_path/timebox_eu.jpg"
+tmp_eu2  = root_path + r"/tmp_path/template_eu.jpg"
 tmp_nba = root_path + r"/tmp_path/timebox_nba.jpg"
 tmp_gr  = root_path + r"/tmp_path/timebox_gr.jpg"
 

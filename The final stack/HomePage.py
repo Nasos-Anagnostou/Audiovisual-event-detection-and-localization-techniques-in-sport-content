@@ -6,9 +6,9 @@ from streamlit_extras.switch_page_button import switch_page
 
 ####################################################### INITIALIZATION ###############################################################
 # init the styles of fonts
-homepage = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Homepage 🏠</strong></p>'
-comp = '<p style="font-family:Arial Black; color:#262730; font-size: 150%;"><strong>Chose competition🏆</strong></p>'
-title = '<p style="font-family:Arial Black; color:Chocolate; font-size: 300%; text-align: center;">SPORTS HIGHLIGHT GENERATOR 🏀</p>'
+homepage = '<p style="font-family:Arial Black; color:#262730; text-shadow: 1px 1px 2px Snow; font-size: 250%;"><strong>Homepage 🏠</strong></p>'
+comp = '<p style="font-family:Arial Black; color:#262730; text-shadow: 1px 1px 2px Snow; font-size: 250%;"><strong>Chose competition🏆</strong></p>'
+title = '<p style="font-family:Arial Black; color:Chocolate; text-shadow: 6px 6px 10px Black; font-size: 320%; text-align: center;">SPORTS HIGHLIGHT GENERATOR 🏀</p>'
 
 # Initialization of the timetag variable
 if "timetags" not in st.session_state:
@@ -49,9 +49,10 @@ def add_bg_from_url():
         f"""
        <style>
        .stApp {{
-       background-image: url("https://abreuadvogados.com/wp-content/uploads/2021/02/Sports-Law-Portugal.jpg");
+       background-image: url("https://blenderartists.org/uploads/default/original/4X/3/e/d/3ed4afe4caf93681bffb73bf21382c2fe271d141.jpg");
        background-attachment: fixed;
-       background-size: cover
+       background-size: cover;
+       background-repeat: no-repeat;
        }}
        </style>
        """,
@@ -60,6 +61,7 @@ def add_bg_from_url():
     add_logo("https://i0.wp.com/www.esleschool.com/wp-content/uploads/2021/03/sports-1.png?resize=120%2C120&ssl=1")
     st.sidebar.markdown("# SPORTS HIGHLIGHT GENERATOR🏀🏆")
     # set the homepage style
+    empty_line(5)
     st.markdown(title, unsafe_allow_html=True)
     empty_line(4)
 
@@ -72,8 +74,8 @@ empty_line(5)
 ################################################# CODE STUFF ######################################
 
 # create 3 columns for each competition
-st.markdown(comp,unsafe_allow_html=True)
-empty_line(2)
+st.markdown(comp, unsafe_allow_html=True)
+empty_line(3)
 col1, col2, col3 = st.columns(3, gap="large")
 
 

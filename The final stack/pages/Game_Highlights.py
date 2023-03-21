@@ -43,12 +43,12 @@ if "flag" not in st.session_state:
 if "the_game" not in st.session_state:
     st.session_state['the_game'] = 0
 ######################################## THE LAYOUT OF THE PAGE ###########################################
-gamevideo = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Watch the Video 📺</strong></p>'
-highlights = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Highlights of the Game 📸️</strong></p>'
-err_message = '<p style="font-family:Arial Black; color:coral; font-size: 120%;"><strong>Choose a competition from the HomePage first please 🙂</strong></p>'
-sheet = '<p style="font-family:Arial Black; color:coral; font-size: 120%;"><strong>Please select which Highlight you wish to watch</strong></p>'
-err2_message = '<p style="font-family:Arial Black; color:coral; font-size: 120%;"><strong>We are sorry, the Highlight you want to watch doesnt exist in our database 😏</strong></p>'
-selectgame = '<p style="font-family:Arial Black; color:coral; font-size: 120%;"><strong>Please select a game from the menu on the left first 🙂</strong></p>'
+gamevideo = '<p style="font-family:Arial Black; color:Snow; text-shadow: 1px 1px 2px Black; font-size: 200%;"><strong>Watch the Video 📺</strong></p>'
+highlights = '<p style="font-family:Arial Black; color:Snow; text-shadow: 2px 2px 4px Black; font-size: 200%;"><strong>Highlights of the Game 📸️</strong></p>'
+err_message = '<p style="font-family:Arial Black; color:Snow; font-size: 120%;"><strong>Choose a competition from the HomePage first please 🙂</strong></p>'
+sheet_message = '<p style="font-family:Arial Black; color:Snow; font-size: 120%;"><strong>Please select which Highlight you wish to watch!</strong></p>'
+err2_message = '<p style="font-family:Arial Black; color:Snow; font-size: 120%;"><strong>We are sorry, the Highlight you want to watch doesnt exist in our database 😏</strong></p>'
+selectgame = '<p style="font-family:Arial Black; color:Snow; font-size: 120%;"><strong>Please select a game from the menu on the left first 🙂</strong></p>'
 
 
 #config of the page
@@ -118,6 +118,7 @@ def make_df(data, vid_dir, ttag_dir):
 
 with col1:
     # title of the page
+    empty_line(3)
     st.markdown(highlights, unsafe_allow_html=True)
 
     # session competition
@@ -132,17 +133,17 @@ with col1:
         # session game
         st.session_state.the_game = game_vid
         # if statement for the games
-        if game_vid == "CSKA Moscow Vs Barcelona":
+        if game_vid == euro_games[1]:
             st.write('This is the ' + game_vid + ' play by play text')
             df1 = pd.read_csv(filepaths.cska_barc_csv)
             make_df(df1, filepaths.cska_barc_vid, "eur1.csv")
 
-        elif game_vid == "Olympiakos Vs Panathinaikos":
+        elif game_vid == euro_games[2]:
             st.write('This is the ' + game_vid + ' play by play text')
             df2 = pd.read_csv(filepaths.oly_pao_csv)
             make_df(df2, filepaths.oly_pao_vid, "eur2.csv")
 
-        elif game_vid == "CSKA Moscow Vs Bayern Munich":
+        elif game_vid == euro_games[3]:
             st.write('This is the ' + game_vid + ' play by play text')
             df3 = pd.read_csv(filepaths.cska_bayern_csv)
             make_df(df3, filepaths.cska_bayern_vid, "eur3.csv")  # gia na steilo to video sto backend
@@ -166,6 +167,7 @@ with col1:
 
 with col2:                                              # EPILOGI 2 TA EMFANIZO DIPLA
     # title of the page
+    empty_line(3)
     st.markdown(gamevideo, unsafe_allow_html=True)
     empty_line(5)
 
@@ -194,8 +196,8 @@ with col2:                                              # EPILOGI 2 TA EMFANIZO 
         st.image("https://cdn1.iconfinder.com/data/icons/arrows-vol-1-4/24/Curved_arrow_5-512.png")
 
     elif not st.session_state.flag:
-        empty_line(2)
-        st.markdown(sheet, unsafe_allow_html=True)
+
+        st.markdown(sheet_message, unsafe_allow_html=True)
         st.image("https://cdn1.iconfinder.com/data/icons/arrows-vol-1-4/24/Curved_arrow_5-512.png")
 
     elif st.session_state.flag:

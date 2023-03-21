@@ -4,7 +4,6 @@
 # latest update 7/11/22
 
 # ALL THE IMPORTS NEEDED
-import os
 import filepaths
 import pytesseract
 import easyocr
@@ -14,18 +13,18 @@ import pandas as pd
 import glob
 import re
 import ntpath
-import time
 import math
 import imutils
+import requests
 from PIL import Image, ImageEnhance
 from pandasgui import show
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 from moviepy.editor import *
-import requests
+from statistics import mean
 from Obj_Det_AI import detect_custom_object
 
 
-############################################# OCR FUNCTIONS #############################################
+##################################################  OCR FUNCTIONS  ####################################################
 # creating method to sort image files in folder based in frame number low to high
 numbers = re.compile(r'(\d+)')
 def numericalSort(value):
@@ -35,7 +34,6 @@ def numericalSort(value):
 
 # tesseract ocr function
 def tess_dir(ocr_path):
-
     # tesseract allocation
     pytesseract.pytesseract.tesseract_cmd = r"E:\programs\tessaract\tesseract.exe"
     # tesseract configure
@@ -44,6 +42,7 @@ def tess_dir(ocr_path):
     # initialise vars
     counter_1 = 0
     counter_2 = 0
+    alltimetags = []
     timetags = []
     failrec = []
 
@@ -103,7 +102,8 @@ def tess_dir(ocr_path):
 
             if not success_flag:
 
-                if re.fullmatch(filepaths.time_pat, item):
+                if re.fullmatch(filepaths.time_pat2, item):
+                    alltimetags.append([item, ftail])
 
                     # timetag parsing success inform
                     print("This is a match!", item)
@@ -120,6 +120,8 @@ def tess_dir(ocr_path):
                         else:
                             gs[i] = "0:0" + third
 
+                    else:
+                        gs[i] = item.replace(';', ':')
 
                     # getting frame_id
                     z = re.findall('([0-9]+)', ftail)[0]
@@ -138,12 +140,13 @@ def tess_dir(ocr_path):
     success_rate = (counter_2 / counter_1) * 100
 
     # Printing stuff related to ocr success
+    print("\n Timetags exported are: ", timetags)
     print("\nYou found {} out of {} images successfully.".format(counter_2, counter_1))
     print("\n Success rate of:", success_rate, "%")
-    print("\n These images failed :", failrec)
-    print("\n Timetags exported are: ", timetags)
+    #print("\n These images failed :", failrec)
 
-    return timetags, success_rate
+
+    return timetags, alltimetags
 
 # easyOcr ocr function
 def easyOcr_dir(ocr_path):
@@ -174,9 +177,8 @@ def easyOcr_dir(ocr_path):
         img_pim = np.array(pim_en)
         img_pim = img_pim[:, :, ::-1].copy()
 
-        # 3. Convert to Gray
+        # 2. Convert to Gray
         grimg = cv2.cvtColor(img_pim, cv2.COLOR_BGR2GRAY)
-
 
         # 3. thresholding image chose binary thresholding since it gives the best results( analusi kata to grapsimo )
         ret, thr_img = cv2.threshold(grimg, 120, 255, cv2.THRESH_BINARY)
@@ -246,7 +248,8 @@ def easyOcr_dir(ocr_path):
 
     return ttags, alltimetags
 
-############################################# OBJECT DETECTION FUNCTIONS ########################################
+
+#############################################  OBJECT DETECTION FUNCTIONS  ############################################
 # Template matching
 def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
 
@@ -281,7 +284,7 @@ def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
     gray_tem = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)  # convert it to grayscale
 
     # loop through every frame read by input
-    founds = []  # bookkeeping variable to keep track of the matched region
+    findings = []  # bookkeeping variable to keep track of the matched region
     ret = True
     first_time = True
     while ret:
@@ -339,7 +342,6 @@ def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
 
             # unpack the bookkeeping variable and compute the (x, y) coordinates of the bounding box based on the resized ratio
             (maxVal, maxLoc) = found
-            founds.append(found)
 
             if maxVal >= threshold:
                 # we just found the first mathcing image so we use it as the template from now on!
@@ -356,37 +358,146 @@ def match_scl(vin_file, ocr_path, tmp_img, start_minute, end_minute):
                 cv2.imwrite(ocr_path + "frame_%d.png" % frameid, crop_img)
                 # cv2.imshow("cropped", crop_img)
                 # cv2.waitKey(0)
-                print(found, frameid)
+                #print(found, frameid)
+                findings.append(found[0])
 
-            else:
-                print("Didnt make it")
-
+            # else:
+            #     print("Didnt make it")
 
     # close capture
     cap.release()
 
     # quality control for max false positive - min true negative detected so we adjust threshold
-    yef = []
-    nof = []
-    for f in founds:
-        if (f[1] == (54, 609)) | (f[1] == (61, 608)):
-            yef.append([f[0], f[1]])
-        else:
-            nof.append([f[0], f[1]])
+    mean_findings = sum(findings) / len(findings)
 
     print("\nQuality Control:")
-    try:
-        print("Max false", max(nof))
-    except:
-        print(" No falses detected")
-    try:
-        print("Min true", min(yef))
-    except:
-        print(" No true detected")
+    print("Mean score", mean_findings)
+    print("Max value", max(findings))
+    print("Min value", min(findings))
 
     return myfps
 
-############################################# CSV EDITING FUNCTIONS #############################################
+# get the template image with deep learning object detect
+def template_finder(tmpl_path, trim_vid):
+    # read first frame from input video
+    cap = cv2.VideoCapture(trim_vid)
+    # check if video stream is open
+    if not cap.isOpened():
+        print("Error opening video  file")
+
+    myfps = cap.get(5)
+    ret = True
+    while ret:
+        # obj detect with nn model
+        frameid = cap.get(1)
+        ret, frame = cap.read()
+        if ret & (frameid % math.floor(myfps) == 0):
+
+            template_nn, flag = detect_custom_object(frame)
+            if flag:
+                break
+
+    template = cv2.imread(template_nn)  # load the template image
+    print("Found in frame: ", frameid)
+
+    template_path = os.path.join(tmpl_path, "template_eu.jpg")
+    cv2.imwrite(template_path, template)
+
+
+#############################################  VIDEO EDITING FUNCTIONS  ###############################################
+# create the Highlight video clip
+def clip_creator(trim_vid, myttag, ttaglist, myfps):
+    # delete the old clip
+    if os.path.exists(filepaths.clip_1):
+        os.remove(filepaths.clip_1)
+        print("Deleting the old file")
+
+        # videolcip init
+    videoclip = 0
+    # flag to check if the video created
+    vflag = False
+    for item in ttaglist:
+
+        if (myttag[0] in item[0]) and (myttag[1] in item[1]):
+            fr_id = float(item[2])
+            print("\nFound timestamp: {0} in frame_id: {1}".format(item[0], fr_id))
+
+            # Clip creation creating subclip with duration [mysec-4, mysec+2]  #vrisko to sec thelo [mysec-6, mysec+2] h [fr_id -(fps* 6), fr_id +(fps* 2)]
+            mysec = fr_id / myfps
+            ffmpeg_extract_subclip(trim_vid, mysec - 6, mysec + 1, targetname=filepaths.clip_1)
+            videoclip = filepaths.clip_1
+            vflag = True
+            break
+
+        elif myttag[0] in item[0] and myttag[1] not in item[2]:
+            print("\nWe dont have the quarter")
+
+        else:
+            print("we dont have this highlight yet")
+
+
+    # # Play the video clip created
+    # cap = cv2.VideoCapture(videoclip)
+    # fps = int(cap.get(cv2.CAP_PROP_FPS))   # or cap.get(5)
+    #
+    # if not cap.isOpened():
+    #     print("Error File Not Found")
+    #
+    # # setting playback for video clip created
+    # while cap.isOpened():
+    #     ret,frame= cap.read()
+    #
+    #     if ret:
+    #         time.sleep(1/fps)
+    #         cv2.imshow('Highlight!', frame)
+    #         if cv2.waitKey(1) & 0xFF == ord('q'):
+    #             break
+    #     else:
+    #         break
+    #
+    # # close capture
+    # cap.release()
+    # cv2.destroyAllWindows()
+    return vflag, videoclip
+
+
+#############################################  WEB SCRAPPER FUNCTION  #################################################
+# web scrapper to get the webcast text files of the game you want
+def eur_scrapper(game_name):
+    ######################### seasoncode=? kai gamecode=? apo to site ths euroleague
+    #game_name = 'game1.csv'
+    url = "https://live.euroleague.net/api/PlaybyPlay?gamecode=263&seasoncode=E2020"
+    r = requests.get(url)
+    print(r.status_code)  # if all goes well this must return 200
+    data = r.json()
+
+    ############### AUTO GIA OLA TA QUARTERS
+    # 1ST QUARTER
+    df1Q = pd.DataFrame.from_dict(pd.json_normalize(data['FirstQuarter']), orient='columns')
+    df1Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
+    df1Q.insert(loc=0, column='Quarter', value='1st Quarter')
+
+    # 2ND QUARTER
+    df2Q = pd.DataFrame.from_dict(pd.json_normalize(data['SecondQuarter']), orient='columns')
+    df2Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
+    df2Q.insert(loc=0, column='Quarter', value='2nd Quarter')
+
+    # 3RD QUARTER
+    df3Q = pd.DataFrame.from_dict(pd.json_normalize(data['ThirdQuarter']), orient='columns')
+    df3Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
+    df3Q.insert(loc=0, column='Quarter', value='3nd Quarter')
+
+    # 4TH QUARTER
+    df4Q = pd.DataFrame.from_dict(pd.json_normalize(data['ForthQuarter']), orient='columns')
+    df4Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
+    df4Q.insert(loc=0, column='Quarter', value='4th Quarter')
+
+    frames = (df1Q, df2Q, df3Q, df4Q)
+    result = pd.concat(frames)
+    result.to_csv(os.path.join(r"E:\Career files\Degree Thesis\2. Dataset\competition_paths\csv_paths\csv_eur", game_name))
+
+
+#############################################  CSV EDITING FUNCTIONS  #################################################
 # csv file editor obsolete since the frontend is developed
 def csv_editor (filename):
 
@@ -428,117 +539,3 @@ def csv_editor (filename):
 	df.to_csv(mypath+"/sample1.csv", index=False)
 
 	return myttag
-
-############################################# VIDEO EDITING FUNCTIONS ############################################
-# create the Highlight video clip
-def clip_creator(trim_vid, myttag, ttaglist, myfps):
-    # delete the old clip
-    if os.path.exists(filepaths.clip_1):
-        os.remove(filepaths.clip_1)
-        print("Deleting the old file")
-
-        # videolcip init
-    videoclip = 0
-    # flag to check if the video created
-    vflag = False
-    for item in ttaglist:
-
-        if (myttag[0] in item[0]) and (myttag[1] in item[1]):
-            fr_id = float(item[2])
-            print("\nFound timestamp: {0} in frame_id: {1}".format(item[0], fr_id))
-
-            # Clip creation creating subclip with duration [mysec-4, mysec+2]  #vrisko to sec thelo [mysec-6, mysec+2] h [fr_id -(fps* 6), fr_id +(fps* 2)]
-            mysec = fr_id / myfps
-            ffmpeg_extract_subclip(trim_vid, mysec - 4, mysec + 2, targetname=filepaths.clip_1)
-            videoclip = filepaths.clip_1
-            vflag = True
-            break
-
-        elif myttag[0] in item[0] and myttag[1] not in item[2]:
-            print("\nWe dont have the quarter")
-
-        else:
-            print("we dont have shit")
-
-
-    # # Play the video clip created
-    # cap = cv2.VideoCapture(videoclip)
-    # fps = int(cap.get(cv2.CAP_PROP_FPS))   # or cap.get(5)
-    #
-    # if not cap.isOpened():
-    #     print("Error File Not Found")
-    #
-    # # setting playback for video clip created
-    # while cap.isOpened():
-    #     ret,frame= cap.read()
-    #
-    #     if ret:
-    #         time.sleep(1/fps)
-    #         cv2.imshow('Highlight!', frame)
-    #         if cv2.waitKey(1) & 0xFF == ord('q'):
-    #             break
-    #     else:
-    #         break
-    #
-    # # close capture
-    # cap.release()
-    # cv2.destroyAllWindows()
-    return vflag, videoclip
-
-def eur_scrapper(game_name):
-    ######################### seasoncode=? kai gamecode=? apo to site ths euroleague
-    #game_name = 'game1.csv'
-    url = "https://live.euroleague.net/api/PlaybyPlay?gamecode=40&seasoncode=E2022"
-    r = requests.get(url)
-    print(r.status_code)  # if all goes well this must return 200
-    data = r.json()
-
-    ############### AUTO GIA OLA TA QUARTERS
-    # 1ST QUARTER
-    df1Q = pd.DataFrame.from_dict(pd.json_normalize(data['FirstQuarter']), orient='columns')
-    df1Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
-    df1Q.insert(loc=0, column='Quarter', value='1st Quarter')
-
-    # 2ND QUARTER
-    df2Q = pd.DataFrame.from_dict(pd.json_normalize(data['SecondQuarter']), orient='columns')
-    df2Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
-    df2Q.insert(loc=0, column='Quarter', value='2nd Quarter')
-
-    # 3RD QUARTER
-    df3Q = pd.DataFrame.from_dict(pd.json_normalize(data['ThirdQuarter']), orient='columns')
-    df3Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
-    df3Q.insert(loc=0, column='Quarter', value='3nd Quarter')
-
-    # 4TH QUARTER
-    df4Q = pd.DataFrame.from_dict(pd.json_normalize(data['ForthQuarter']), orient='columns')
-    df4Q = df1Q[["MARKERTIME", "PLAYER", "PLAYINFO"]]
-    df4Q.insert(loc=0, column='Quarter', value='4th Quarter')
-
-    frames = (df1Q, df2Q, df3Q, df4Q)
-    result = pd.concat(frames)
-    result.to_csv(os.path.join(r"E:\Career files\Degree Thesis\2. Dataset\competition_paths\csv_paths\csv_eur", game_name))
-
-def template_finder(tmpl_path, trim_vid):
-    # read first frame from input video
-    cap = cv2.VideoCapture(trim_vid)
-    # check if video stream is open
-    if not cap.isOpened():
-        print("Error opening video  file")
-
-    myfps = cap.get(5)
-    ret = True
-    while ret:
-        # obj detect with nn model
-        frameid = cap.get(1)
-        ret, frame = cap.read()
-        if ret & (frameid % math.floor(myfps) == 0):
-
-            template_nn, flag = detect_custom_object(frame)
-            if flag:
-                break
-
-    template = cv2.imread(template_nn)  # load the template image
-    print("Found in frame: ", frameid)
-
-    template_path = os.path.join(tmpl_path, "template_eu.jpg")
-    cv2.imwrite(template_path, template)

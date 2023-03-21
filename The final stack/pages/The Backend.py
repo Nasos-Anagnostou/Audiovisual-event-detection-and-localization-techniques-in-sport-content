@@ -2,13 +2,14 @@ import streamlit as st
 import filepaths
 import os
 import csv
+from HomePage import add_bg_from_url, empty_line
 from streamlit_extras.app_logo import add_logo
 from streamlit_extras.switch_page_button import switch_page
 from all_functions import match_scl, easyOcr_dir, tess_dir
 
 ####################################################### INITIALIZATION ###############################################################
 # init the styles of fonts
-homepage = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>CREATOR OF HIGHLIGHTS 🏠</strong></p>'
+homepage = '<p style="font-family:Arial Black; color:Snow; font-size: 200%;"><strong>CREATOR OF HIGHLIGHTS 🏠</strong></p>'
 comp = '<p style="font-family:Arial Black; color:#262730; font-size: 200%;"><strong>Chose competition🏆</strong></p>'
 title = '<p style="font-family:Arial Black; color:Chocolate; font-size: 300%; text-align: center;">SPORTS HIGHLIGHT GENERATOR 🏀</p>'
 
@@ -40,30 +41,30 @@ st.set_page_config(page_title="SPORTS HIGHLIGHT GENERATOR🏀🏆", page_icon="�
 # The title
 #st.title("SPORTS HIGHLIGHT GENERATOR 🏀", anchor=None)
 
-# insert empty spaces
-def empty_line(lines_number):
-    for num in range(lines_number):
-        st.write("\n")
-
-# set background wallpaper and subtitle title & sidebar name
-def add_bg_from_url():
-    st.markdown(
-        f"""
-       <style>
-       .stApp {{
-       background-image: url("https://abreuadvogados.com/wp-content/uploads/2021/02/Sports-Law-Portugal.jpg");
-       background-attachment: fixed;
-       background-size: cover
-       }}
-       </style>
-       """,
-        unsafe_allow_html=True
-    )
-    add_logo("https://i0.wp.com/www.esleschool.com/wp-content/uploads/2021/03/sports-1.png?resize=120%2C120&ssl=1")
-    st.sidebar.markdown("# SPORTS HIGHLIGHT GENERATOR🏀🏆")
-    # set the homepage style
-    st.markdown(title, unsafe_allow_html=True)
-    empty_line(4)
+# # insert empty spaces
+# def empty_line(lines_number):
+#     for num in range(lines_number):
+#         st.write("\n")
+#
+# # set background wallpaper and subtitle title & sidebar name
+# def add_bg_from_url():
+#     st.markdown(
+#         f"""
+#        <style>
+#        .stApp {{
+#        background-image: url("https://abreuadvogados.com/wp-content/uploads/2021/02/Sports-Law-Portugal.jpg");
+#        background-attachment: fixed;
+#        background-size: cover
+#        }}
+#        </style>
+#        """,
+#         unsafe_allow_html=True
+#     )
+#     add_logo("https://i0.wp.com/www.esleschool.com/wp-content/uploads/2021/03/sports-1.png?resize=120%2C120&ssl=1")
+#     st.sidebar.markdown("# SPORTS HIGHLIGHT GENERATOR🏀🏆")
+#     # set the homepage style
+#     st.markdown(title, unsafe_allow_html=True)
+#     empty_line(4)
 
 add_bg_from_url()
 
@@ -147,11 +148,36 @@ with col2:
    # st.image("https://andscape.com/wp-content/uploads/2017/06/nbalogo.jpg?w=700")
    st.image("https://1000logos.net/wp-content/uploads/2017/04/Logo-NBA.png")
 
+   empty_line(13)
+
+   # user give how long the video will be
+   start2_min = st.text_input("Enter the starting minute or 'start' for the whole video", max_chars=5,
+                             placeholder="Starting minute  ")
+   stop2_min = st.text_input("Enter the stopping minute or 'end' for the whole video", max_chars=5,
+                            placeholder="Stopping minute  ")
+
+   # make a menu with selectbox
+   game_vid2 = st.selectbox("For which Game you want to create the Highlights??", my_options, index=0, key=None,
+                           help=None, on_change=None, args=None, kwargs=None, disabled=False,
+                           label_visibility="visible")
+
 
 with col3:
    #st.image("https://athlitikoskosmos.gr/wp-content/uploads/2022/10/inbound8215984157073710095.jpg")
    st.image("https://assets.b365api.com/images/wp/o/eff877d8fa1926f2f8423fa038e38f1a.png")
 
+   empty_line(9)
+
+   # user give how long the video will be
+   start3_min = st.text_input("Enter the starting minute or 'start' for the whole video", max_chars=5,
+                              placeholder="Starting minute ")
+   stop3_min = st.text_input("Enter the stopping minute or 'end' for the whole video", max_chars=5,
+                             placeholder="Stopping minute ")
+
+   # make a menu with selectbox
+   game_vid3 = st.selectbox("For which Game you want to create the Highlights???", my_options, index=0, key=None,
+                            help=None, on_change=None, args=None, kwargs=None, disabled=False,
+                            label_visibility="visible")
 
 
 
