@@ -103,7 +103,7 @@ with col1:
 
         # template matching and store fps
         myfps = match_scl(filepaths.cska_barc_vid, filepaths.ocr_eu1, filepaths.tmp_eu,float(start_min),float(stop_min))
-        with open("video_fps.txt", "w") as file:
+        with open(os.path.join(filepaths.timetags, 'video_fps.txt'), "w") as file:
             file.write(str(myfps))
 
         # ocr the frames matching temp with easyOcr
@@ -118,7 +118,7 @@ with col1:
 
         # template matching
         myfps = match_scl(filepaths.oly_pao_vid, filepaths.ocr_eu2, filepaths.tmp_eu, float(start_min),float(stop_min))
-        with open("video_fps.txt", "w") as file:
+        with open(os.path.join(filepaths.timetags, 'video_fps.txt'), "w") as file:
             file.write(str(myfps))
 
         # ocr the frames matching temp with easyOcr
@@ -133,7 +133,7 @@ with col1:
 
         # template matching
         myfps = match_scl(filepaths.cska_bayern_vid, filepaths.ocr_eu3, filepaths.tmp_eu, 33.5, 34.5)
-        with open("video_fps.txt", "w") as file:
+        with open(os.path.join(filepaths.timetags, 'video_fps.txt'), "w") as file:
             file.write(str(myfps))
 
         # ocr the frames matching temp with easyOcr
